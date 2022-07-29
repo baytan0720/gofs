@@ -6,5 +6,4 @@ type Args struct {
 }
 
 type Reply struct {
-	S string
 }
