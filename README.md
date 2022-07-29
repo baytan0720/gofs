@@ -9,3 +9,6 @@ Go语言实现分布式存储系统
 cd NameNode && go run *.go
 cd ../Client && go run main.go
 ```
+
+### Git Test
+BYL
