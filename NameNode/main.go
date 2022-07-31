@@ -7,11 +7,14 @@ import (
 	"net/rpc"
 )
 
-type NameNode struct{}
+type NameNode struct {
+	NumDataNode int
+}
 
 func main() {
 	nn := makeNameNode()
 	nn.server()
+	log.Println("NameNode is running port:", Config.Port)
 
 	//阻塞
 	select {}
@@ -31,9 +34,10 @@ func makeNameNode() *NameNode {
 
 //rpc挂载
 func (nn *NameNode) server() {
+	opencfg()
 	rpc.Register(nn)
 	rpc.HandleHTTP()
-	l, e := net.Listen("tcp", ":1234")
+	l, e := net.Listen("tcp", Config.Port)
 	if e != nil {
 		log.Fatal("listen error:", e)
 	}
