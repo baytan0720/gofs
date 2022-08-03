@@ -13,6 +13,13 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 	var cmd []byte
+	fmt.Println("  _____  ____  ______ _____ ")
+	fmt.Println(" / ____|/ __ \\|  ____/ ____|")
+	fmt.Println("| |  __| |  | | |__ | (___  ")
+	fmt.Println("| | |_ | |  | |  __| \\___ \\ ")
+	fmt.Println("| |__| | |__| | |    ____) |")
+	fmt.Println(" \\_____|\\____/|_|   |_____/ ")
+	fmt.Println("")
 	for {
 		fmt.Print("gofs > ")
 		cmd, _, _ = reader.ReadLine()
@@ -23,7 +30,7 @@ func main() {
 			Hello(nn)
 		case "help":
 			fmt.Println("Usage:")
-			fmt.Println("  hello")
+			fmt.Println("  hello  (Verify the feasibility of the RPC)")
 			fmt.Println("  exit")
 		default:
 			fmt.Println("Unknow command: You could press \"help\" to get all commands.")
