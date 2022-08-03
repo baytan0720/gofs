@@ -9,12 +9,6 @@ type Args struct {
 type Reply struct {
 }
 
-type HelloArgs struct{}
-
-type HelloReply struct {
-	S string
-}
-
 type DNRegisterArgs struct{}
 
 type DNRegisterReply struct {

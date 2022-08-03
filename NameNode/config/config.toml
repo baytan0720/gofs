@@ -1,0 +1,5 @@
+#NameNode配置文件
+NumDataNodeLimit = 20       #DataNode上限
+
+#RPC配置
+port = ":1234"              #NameNode监听端口

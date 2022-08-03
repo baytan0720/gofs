@@ -5,27 +5,49 @@ import (
 	"net"
 	"net/http"
 	"net/rpc"
+	"sync"
+
+	"github.com/xujiajun/nutsdb"
 )
 
-type NameNode struct{}
+var db *nutsdb.DB
+
+type NameNode struct {
+	NumDataNode  int
+	idChan       chan int
+	idIncrease   int
+	DataNodeList []*DataNode
+	mu           *sync.Mutex
+}
 
 func main() {
 	nn := makeNameNode()
+
+	db = opendb()
+	defer db.Close()
+
 	nn.server()
+	log.Println("NameNode is running, port", Config.Port)
 
 	//阻塞
 	select {}
 }
 
 //rpc调用示例
-func (nn *NameNode) Hello(Args *Args, Reply *Reply) error {
+func (nn *NameNode) Hello(Args *HelloArgs, Reply *HelloReply) error {
 	Reply.S = "Hello"
 	return nil
 }
 
 //创建NameNode
 func makeNameNode() *NameNode {
-	nn := NameNode{}
+	opencfg()
+
+	nn := NameNode{
+		idChan:       make(chan int, 10),
+		DataNodeList: make([]*DataNode, 10, Config.NumDataNodeLimit),
+		mu:           &sync.Mutex{},
+	}
 	return &nn
 }
 
@@ -33,7 +55,7 @@ func makeNameNode() *NameNode {
 func (nn *NameNode) server() {
 	rpc.Register(nn)
 	rpc.HandleHTTP()
-	l, e := net.Listen("tcp", ":1234")
+	l, e := net.Listen("tcp", Config.Port)
 	if e != nil {
 		log.Fatal("listen error:", e)
 	}
@@ -41,5 +63,5 @@ func (nn *NameNode) server() {
 }
 
 // func (nn *NameNode) close() {
-
+// 	os.Exit(0)
 // }
