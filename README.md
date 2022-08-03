@@ -10,8 +10,8 @@ Linux系统下
 ```Bash
 go mod tidy
 cd NameNode && go run *.go
-cd ../DataNode && go run *.go
-cd ../Client && go run *.go
+cd DataNode && go run *.go
+cd Client && go run *.go
 ```
 
 Windows系统下
