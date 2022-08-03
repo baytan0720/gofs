@@ -18,3 +18,5 @@ cd NameNode && go run *.go
 cd DataNode && go run *.go
 cd Client && go run *.go
 ```
+### 8.3
+实现注册中心、心跳机制
