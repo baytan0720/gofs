@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"net/rpc"
@@ -10,16 +11,20 @@ import (
 func main() {
 	nn := register()
 
+	reader := bufio.NewReader(os.Stdin)
+	var cmd []byte
 	for {
-		var cmd string
 		fmt.Print("gofs > ")
-		fmt.Scanln(&cmd)
-		switch cmd {
+		cmd, _, _ = reader.ReadLine()
+		switch string(cmd) {
 		case "exit":
 			return
 		case "hello":
 			Hello(nn)
 		case "help":
+			fmt.Println("Usage:")
+			fmt.Println("  hello")
+			fmt.Println("  exit")
 		default:
 			fmt.Println("Unknow command: You could press \"help\" to get all commands.")
 		}
