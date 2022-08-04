@@ -1,0 +1,14 @@
+syntax="proto3";
+option go_package="/internal/service;service";
+
+message HeartbeatArgs {
+  int32 Id=1;
+}
+
+message HeartbeatReply {
+
+}
+
+service HeartbeatService {
+  rpc Heartbeat(HeartbeatArgs) returns(HeartbeatReply);
+}

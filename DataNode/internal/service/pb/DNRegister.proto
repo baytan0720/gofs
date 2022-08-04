@@ -1,0 +1,15 @@
+syntax="proto3";
+option go_package="/internal/service;service";
+
+message DNRegisterArgs {
+
+}
+
+message DNRegisterReply {
+  uint32 Id=1;
+  string Addr=2;
+}
+
+service RegisterService {
+  rpc Register(DNRegisterArgs) returns(DNRegisterReply);
+}
