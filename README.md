@@ -12,10 +12,11 @@ Go语言实现分布式存储系统
 ### 7.29  
 项目开始，搭建底层及RPC  
 使用说明：  
-拉取项目到本地并运行  
+拉取项目到本地并运行   
+##### Linux/Macos
 ```Bash
-cd NameNode && go run *.go
-cd DataNode && go run *.go
+cd NameNode/cmd && go run main.go
+cd DataNode/cmd && go run main.go
 cd Client && go run *.go
 ```
 ### 8.3
