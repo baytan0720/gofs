@@ -5,7 +5,8 @@ import (
 )
 
 func main() {
-	dn := model.DNRegister()
+	dn := model.MakeDataNode()
 	go dn.Heartbeat()
+
 	select {}
 }

@@ -4,15 +4,42 @@ import (
 	"context"
 	"gofs/DataNode/config"
 	"gofs/DataNode/internal/service"
+	"log"
+	"os"
+	"time"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"log"
-	"time"
 )
 
 type DataNode struct {
 	Id   uint32 // DataNode标识符
 	Conn *grpc.ClientConn
+}
+
+func MakeDataNode() *DataNode {
+	conn, id := DNRegister()
+	return &DataNode{
+		Id:   id,
+		Conn: conn,
+	}
+}
+
+func DNRegister() (*grpc.ClientConn, uint32) {
+	config.Opencfg()
+	addr := config.Config.Addr + config.Config.Port
+	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatal(err)
+	}
+	c := service.NewRegisterServiceClient(conn)
+	req := &service.DNRegisterArgs{}
+	res, err := c.Register(context.Background(), req)
+	if err != nil {
+		log.Panicln(err)
+	}
+	log.Println("Register Success,get ID: ", res.Id)
+	return conn, res.Id
 }
 
 // Heartbeat DataNode调用心跳检测客户端
@@ -33,6 +60,9 @@ func (dn *DataNode) Heartbeat() {
 				}
 				time.Sleep(3 * time.Second)
 			}
+			if !ok {
+				os.Exit(0)
+			}
 		}
 		time.Sleep(3 * time.Second)
 	}
@@ -47,24 +77,4 @@ func (dn *DataNode) reconnect() bool {
 	}
 	dn.Conn = conn
 	return true
-}
-
-func DNRegister() *DataNode {
-	config.Opencfg()
-	addr := config.Config.Addr + config.Config.Port
-	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Fatal(err)
-	}
-	c := service.NewRegisterServiceClient(conn)
-	req := &service.DNRegisterArgs{}
-	res, err := c.Register(context.Background(), req)
-	if err != nil {
-		log.Panicln(err)
-	}
-	log.Println("Register Success,get ID: ", res.Id)
-	return &DataNode{
-		Id:   res.Id,
-		Conn: conn,
-	}
 }

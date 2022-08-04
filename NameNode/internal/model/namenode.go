@@ -4,11 +4,12 @@ import (
 	"context"
 	"gofs/NameNode/config"
 	"gofs/NameNode/internal/service"
-	"google.golang.org/grpc"
 	"log"
 	"net"
 	"sync"
 	"time"
+
+	"google.golang.org/grpc"
 )
 
 type NameNode struct {
@@ -75,50 +76,6 @@ func (nn *NameNode) Register(ctx context.Context, args *service.DNRegisterArgs) 
 	return rep, nil
 }
 
-func (nn *NameNode) DNRegister(Args *service.DNRegisterArgs, Reply *service.DNRegisterReply) error {
-	//请求id
-	select {
-	case t := <-nn.idChan:
-		Reply.Id = uint32(t)
-	default:
-		nn.getId()
-		Reply.Id = uint32(<-nn.idChan)
-	}
-
-	nn.mu.Lock()
-	nn.NumDataNode++
-	nn.mu.Unlock()
-
-	//定时器，10秒无心跳则等待重连，十分钟无心跳则判定离线
-	waittimer := time.NewTimer(1 * time.Minute)
-	dietimer := time.NewTimer(10 * time.Second)
-	nn.DataNodeList[Reply.Id] = &DataNode{
-		Id:        int(Reply.Id),
-		alive:     1,
-		waittimer: waittimer,
-		dietimer:  dietimer,
-	}
-
-	go func() {
-		for {
-			<-waittimer.C
-			nn.DataNodeList[Reply.Id].alive = 2
-			log.Println("ID: ", Reply.Id, " is waiting reconnect")
-			waittimer.Stop()
-		}
-	}()
-	go func() {
-		<-dietimer.C
-		nn.DataNodeList[Reply.Id] = nil
-		dietimer.Stop()
-		nn.idChan <- int(Reply.Id)
-		log.Println("ID: ", Reply.Id, " is died")
-	}()
-
-	log.Println("ID: ", Reply.Id, " is connected")
-	return nil
-}
-
 func (nn *NameNode) Heartbeat(ctx context.Context, args *service.HeartbeatArgs) (*service.HeartbeatReply, error) {
 	rep := new(service.HeartbeatReply)
 	nn.DataNodeList[args.Id].dietimer.Reset(1 * time.Minute)
@@ -127,15 +84,6 @@ func (nn *NameNode) Heartbeat(ctx context.Context, args *service.HeartbeatArgs) 
 	log.Println("ID: ", args.Id, " Heartbeating")
 	return rep, nil
 }
-
-//心跳
-/*func (nn *NameNode) Heartbeat(Args *service.HeartbeatArgs, Reply *HeartbeatReply) error {
-	nn.DataNodeList[Args.Id].dietimer.Reset(1 * time.Minute)
-	nn.DataNodeList[Args.Id].waittimer.Reset(10 * time.Second)
-	nn.DataNodeList[Args.Id].alive = 1
-	log.Println("ID: ", Args.Id, " Heartbeating")
-	return nil
-}*/
 
 func (nn *NameNode) getId() {
 	for i := 0; i < 3; i++ {
@@ -153,6 +101,6 @@ func (nn *NameNode) Server() {
 	s := grpc.NewServer()
 	service.RegisterRegisterServiceServer(s, nn)
 	service.RegisterHeartbeatServiceServer(s, nn)
-	log.Println("NameNode is running, port", config.Config.Port)
+	log.Println("NameNode is running, listen on " + "127.0.0.1" + config.Config.Port)
 	s.Serve(l)
 }

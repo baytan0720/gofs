@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"runtime"
 
 	"github.com/BurntSushi/toml"
 )
@@ -16,8 +17,14 @@ type config struct {
 var Config *config
 
 func Opencfg() {
-	pwd, _ := os.Getwd()
-	path := pwd + "\\DataNode\\config\\config.toml"
+	var path string
+	sysType := runtime.GOOS
+	if sysType == "windows" {
+		pwd, _ := os.Getwd()
+		path = pwd + "\\NameNode\\config\\config.toml"
+	} else {
+		path = "../config/config.toml"
+	}
 	Config = &config{}
 	_, err := toml.DecodeFile(path, Config)
 	if err != nil {
