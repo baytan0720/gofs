@@ -14,16 +14,3 @@ type HelloArgs struct{}
 type HelloReply struct {
 	S string
 }
-
-type DNRegisterArgs struct{}
-
-type DNRegisterReply struct {
-	Id int
-}
-
-type HeartbeatArgs struct {
-	Id int
-}
-
-type HeartbeatReply struct {
-}
