@@ -5,7 +5,6 @@ import (
 	"gofs/DataNode/config"
 	"gofs/DataNode/internal/service"
 	"log"
-	"os"
 	"time"
 
 	"google.golang.org/grpc"
@@ -28,15 +27,12 @@ func MakeDataNode() *DataNode {
 func DNRegister() (*grpc.ClientConn, uint32) {
 	config.Opencfg()
 	addr := config.Config.Addr + config.Config.Port
-	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Fatal(err)
-	}
+	conn, _ := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	c := service.NewRegisterServiceClient(conn)
 	req := &service.DNRegisterArgs{}
 	res, err := c.Register(context.Background(), req)
 	if err != nil {
-		log.Panicln(err)
+		log.Fatal(err)
 	}
 	log.Println("Register Success,get ID: ", res.Id)
 	return conn, res.Id
@@ -51,30 +47,23 @@ func (dn *DataNode) Heartbeat() {
 		c := service.NewHeartbeatServiceClient(dn.Conn)
 		_, err := c.Heartbeat(context.Background(), &service.HeartbeatArgs{Id: int32(dn.Id)})
 		if err != nil {
-			log.Println("Connection interruption:", err, "Try to reconnect")
-			ok := false
-			for i := 0; i < 10; i++ {
-				ok = dn.reconnect()
-				if ok {
-					break
-				}
-				time.Sleep(3 * time.Second)
-			}
-			if !ok {
-				os.Exit(0)
-			}
+			log.Println("Connection interruption:", err, "Try to reconnect...")
+			timer := time.NewTimer(time.Minute)
+			go func() {
+				<-timer.C
+				log.Fatal("DataNode offline")
+			}()
+			dn.reconnect()
+			timer.Stop()
 		}
 		time.Sleep(3 * time.Second)
 	}
 }
 
-func (dn *DataNode) reconnect() bool {
+//需要重连的情况：NameNode挂了，重连并重新注册；DataNode或NameNode网络波动，不需要重新注册，重新发送心跳即可
+func (dn *DataNode) reconnect() {
 	addr := config.Config.Addr + config.Config.Port
-	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Println("Reconnect fail:", err)
-		return false
-	}
+	conn, _ := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	dn.Conn.Close()
 	dn.Conn = conn
-	return true
 }

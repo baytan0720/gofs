@@ -6,7 +6,7 @@ message HeartbeatArgs {
 }
 
 message HeartbeatReply {
-
+  int32 Ok=1;
 }
 
 service HeartbeatService {

@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"errors"
 	"gofs/NameNode/config"
 	"gofs/NameNode/internal/service"
 	"log"
@@ -26,7 +27,7 @@ func MakeNameNode() *NameNode {
 
 	nn := NameNode{
 		idChan:       make(chan int, 10),
-		DataNodeList: make([]*DataNode, 10, config.Config.NumDataNodeLimit),
+		DataNodeList: make([]*DataNode, 20, config.Config.NumDataNodeLimit),
 		mu:           &sync.Mutex{},
 	}
 	return &nn
@@ -47,8 +48,8 @@ func (nn *NameNode) Register(ctx context.Context, args *service.DNRegisterArgs) 
 	nn.mu.Unlock()
 
 	//定时器，10秒无心跳则等待重连，十分钟无心跳则判定离线
-	waittimer := time.NewTimer(1 * time.Minute)
-	dietimer := time.NewTimer(10 * time.Second)
+	waittimer := time.NewTimer(10 * time.Second)
+	dietimer := time.NewTimer(1 * time.Minute)
 	nn.DataNodeList[rep.Id] = &DataNode{
 		Id:        int(rep.Id),
 		alive:     1,
@@ -56,12 +57,14 @@ func (nn *NameNode) Register(ctx context.Context, args *service.DNRegisterArgs) 
 		dietimer:  dietimer,
 	}
 
+	dietimer.Stop()
 	go func() {
 		for {
 			<-waittimer.C
 			nn.DataNodeList[rep.Id].alive = 2
 			log.Println("ID: ", rep.Id, " is waiting reconnect")
 			waittimer.Stop()
+			dietimer.Reset(1 * time.Minute)
 		}
 	}()
 	go func() {
@@ -78,10 +81,17 @@ func (nn *NameNode) Register(ctx context.Context, args *service.DNRegisterArgs) 
 
 func (nn *NameNode) Heartbeat(ctx context.Context, args *service.HeartbeatArgs) (*service.HeartbeatReply, error) {
 	rep := new(service.HeartbeatReply)
-	nn.DataNodeList[args.Id].dietimer.Reset(1 * time.Minute)
-	nn.DataNodeList[args.Id].waittimer.Reset(10 * time.Second)
-	nn.DataNodeList[args.Id].alive = 1
-	log.Println("ID: ", args.Id, " Heartbeating")
+	if nn.DataNodeList[args.Id] == nil {
+		return rep, errors.New("NO such ID")
+	}
+	dn := nn.DataNodeList[args.Id]
+	dn.waittimer.Stop()
+	dn.dietimer.Stop()
+	dn.waittimer.Reset(10 * time.Second)
+	if dn.alive == 2 {
+		dn.alive = 1
+	}
+	// log.Println("ID: ", args.Id, " Heartbeating")
 	return rep, nil
 }
 

@@ -13,13 +13,7 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 	var cmd []byte
-	fmt.Println("  _____  ____  ______ _____ ")
-	fmt.Println(" / ____|/ __ \\|  ____/ ____|")
-	fmt.Println("| |  __| |  | | |__ | (___  ")
-	fmt.Println("| | |_ | |  | |  __| \\___ \\ ")
-	fmt.Println("| |__| | |__| | |    ____) |")
-	fmt.Println(" \\_____|\\____/|_|   |_____/ ")
-	fmt.Println("")
+	logo()
 	for {
 		fmt.Print("gofs > ")
 		cmd, _, _ = reader.ReadLine()
@@ -55,4 +49,14 @@ func register() *rpc.Client {
 		os.Exit(0)
 	}
 	return nn
+}
+
+func logo() {
+	fmt.Println("  _____  ____  ______ _____ ")
+	fmt.Println(" / ____|/ __ \\|  ____/ ____|")
+	fmt.Println("| |  __| |  | | |__ | (___  ")
+	fmt.Println("| | |_ | |  | |  __| \\___ \\ ")
+	fmt.Println("| |__| | |__| | |    ____) |")
+	fmt.Println(" \\_____|\\____/|_|   |_____/ ")
+	fmt.Println("")
 }
