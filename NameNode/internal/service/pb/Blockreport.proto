@@ -1,0 +1,22 @@
+syntax="proto3";
+package pb;  // 生成的go文件所属包名
+option go_package="/internal/service;service";
+
+message Block {
+  string Name = 1;
+  string Modtime = 2;
+  uint64 size = 3;
+}
+
+message BlockreportArgs {
+  int32 Id = 1;
+  repeated Block Blocklist = 2;
+}
+
+message BlockreportReply {
+  int32 ACK = 1;
+}
+
+service BlockreportService {
+  rpc Blockreport(BlockreportArgs) returns(BlockreportReply);
+}

@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"gofs/NameNode/config"
 	"gofs/NameNode/internal/service"
 	"log"
@@ -21,6 +22,7 @@ type NameNode struct {
 
 	service.UnimplementedHeartbeatServiceServer
 	service.UnimplementedRegisterServiceServer
+	service.UnimplementedBlockreportServiceServer
 }
 
 //MakeNameNode 创建NameNode
@@ -44,6 +46,7 @@ func (nn *NameNode) Server() {
 	s := grpc.NewServer()
 	service.RegisterRegisterServiceServer(s, nn)
 	service.RegisterHeartbeatServiceServer(s, nn)
+	service.RegisterBlockreportServiceServer(s, nn)
 	log.Println("NameNode is running, listen on " + "127.0.0.1" + config.Config.Port)
 	s.Serve(l)
 }
@@ -111,6 +114,15 @@ func (nn *NameNode) Heartbeat(ctx context.Context, args *service.HeartbeatArgs) 
 	}
 	// log.Println("ID: ", args.Id, " Heartbeating")
 	return rep, nil
+}
+
+func (nn *NameNode) Blockreport(ctx context.Context, args *service.BlockreportArgs) (*service.BlockreportReply, error) {
+	nn.DataNodeList[args.Id].Blocklist = args.Blocklist
+	log.Println()
+	for _, v := range args.Blocklist {
+		fmt.Println("Filename:", v.Name, "Size:", v.Size, "B", "Modtime:", v.Modtime)
+	}
+	return &service.BlockreportReply{ACK: 1}, nil
 }
 
 func (nn *NameNode) getId() {

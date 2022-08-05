@@ -12,6 +12,7 @@ import (
 type config struct {
 	NumDataNodeLimit int
 	Port             string
+	GOOS             string
 }
 
 var Config *config
@@ -25,7 +26,7 @@ func Opencfg() {
 	} else {
 		path = "../config/config.toml"
 	}
-	Config = &config{}
+	Config = &config{GOOS: sysType}
 	_, err := toml.DecodeFile(path, Config)
 	if err != nil {
 		log.Fatal("Config read fail ", err.Error())

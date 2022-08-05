@@ -3,11 +3,11 @@ package pb;  // 生成的go文件所属包名
 option go_package="/internal/service;service";
 
 message HeartbeatArgs {
-  int32 Id=1;
+  int32 Id = 1;
 }
 
 message HeartbeatReply {
-  int32 ACK=1;
+  int32 ACK = 1;
 }
 
 service HeartbeatService {

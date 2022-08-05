@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"gofs/DataNode/blockscaner"
 	"gofs/DataNode/config"
 	"gofs/DataNode/internal/service"
 	"log"
@@ -12,15 +13,17 @@ import (
 )
 
 type DataNode struct {
-	Id   uint32 // DataNode标识符
-	Conn *grpc.ClientConn
+	Id        uint32 // DataNode标识符
+	Blocklist []*service.Block
+	Conn      *grpc.ClientConn
 }
 
 func MakeDataNode() *DataNode {
 	conn, id := DNRegister()
 	return &DataNode{
-		Id:   id,
-		Conn: conn,
+		Id:        id,
+		Blocklist: blockscaner.Scanblock(),
+		Conn:      conn,
 	}
 }
 
@@ -40,9 +43,6 @@ func DNRegister() (*grpc.ClientConn, uint32) {
 // Heartbeat DataNode调用心跳检测客户端
 func (dn *DataNode) Heartbeat() {
 	for {
-		if dn.Conn == nil {
-			log.Println("Client Connection is null")
-		}
 		c := service.NewHeartbeatServiceClient(dn.Conn)
 		res, err := c.Heartbeat(context.Background(), &service.HeartbeatArgs{Id: int32(dn.Id)})
 		if err != nil {
@@ -63,6 +63,18 @@ func (dn *DataNode) Heartbeat() {
 			continue
 		}
 		time.Sleep(3 * time.Second)
+	}
+}
+
+func (dn *DataNode) Blockreport() {
+	for {
+		c := service.NewBlockreportServiceClient(dn.Conn)
+		_, err := c.Blockreport(context.Background(), &service.BlockreportArgs{Id: int32(dn.Id), Blocklist: dn.Blocklist})
+		if err != nil {
+			time.Sleep(time.Minute)
+			continue
+		}
+		time.Sleep(1 * time.Hour)
 	}
 }
 

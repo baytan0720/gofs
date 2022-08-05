@@ -7,6 +7,7 @@ import (
 func main() {
 	dn := model.MakeDataNode()
 	go dn.Heartbeat()
+	go dn.Blockreport()
 
 	select {}
 }
