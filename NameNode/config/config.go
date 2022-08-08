@@ -10,9 +10,8 @@ import (
 
 //结构体字段首字母必须大写
 type config struct {
-	NumDataNodeLimit int
-	Port             string
-	GOOS             string
+	Port string
+	GOOS string
 }
 
 var Config *config

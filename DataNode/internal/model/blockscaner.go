@@ -1,4 +1,4 @@
-package blockscaner
+package model
 
 import (
 	"gofs/DataNode/config"
@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 )
 
+//扫描本地block，用于block上报
 func Scanblock() []*service.Block {
 	blocks := []*service.Block{}
 	var root string

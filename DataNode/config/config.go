@@ -2,17 +2,20 @@ package config
 
 import (
 	"log"
+	"net"
 	"os"
 	"runtime"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 )
 
 //结构体字段首字母必须大写
 type config struct {
-	Addr string
-	Port string
-	GOOS string
+	Addr    string
+	Port    string
+	GOOS    string
+	LocalIP string
 }
 
 var Config *config
@@ -31,4 +34,15 @@ func Opencfg() {
 	if err != nil {
 		log.Fatal("Config read fail ", err)
 	}
+	Config.LocalIP = GetLocalIP()
+}
+
+func GetLocalIP() string {
+	conn, err := net.Dial("udp", "8.8.8.8:53")
+	if err != nil {
+		log.Println("check port :53")
+	}
+	ip := strings.Split(conn.LocalAddr().String(), ":")[0]
+	conn.Close()
+	return ip
 }

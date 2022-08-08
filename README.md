@@ -28,7 +28,7 @@ cd Client && go run *.go
 * 安装grpc和protobuf
 * 进入DataNode目录
 ```bash
-protoc -I .\internal\service\pb .\internal\service\pb\*.proto --go_out=plugins=grpc:.
+protoc -I .\internal\service\pb .\internal\service\pb\FileReplicate.proto --go-grpc_out="." --go_out="."
 ```
 一般流程如下
 1. 编写proto文件，指定rpc的输入和输出并定义rpc服务

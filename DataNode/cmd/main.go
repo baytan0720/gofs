@@ -8,6 +8,6 @@ func main() {
 	dn := model.MakeDataNode()
 	go dn.Heartbeat()
 	go dn.Blockreport()
-
+	go dn.ListenSocket()
 	select {}
 }
