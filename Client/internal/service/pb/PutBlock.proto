@@ -1,0 +1,23 @@
+syntax="proto3";
+package pb;  // 生成的go文件所属包名
+option go_package="/internal/service;service";
+
+message PutBlockArgs {
+    
+}
+
+message DNAddr {
+  uint32 Id = 1;
+  string Addr = 2;
+  string port = 3;
+}
+
+message PutBlockReply {
+  uint32 ACK = 1;   //1 ok ;0 err
+  repeated DNAddr DNList = 2;
+  string Err = 3;
+}
+
+service PutBlockService {
+  rpc PutBlock(PutBlockArgs) returns(PutBlockReply);
+}

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.4
-// source: Heartbeat.proto
+// source: HeartBeat.proto
 
 package service
 
@@ -18,88 +18,88 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// HeartbeatServiceClient is the client API for HeartbeatService service.
+// HeartBeatServiceClient is the client API for HeartBeatService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type HeartbeatServiceClient interface {
-	Heartbeat(ctx context.Context, in *HeartbeatArgs, opts ...grpc.CallOption) (*HeartbeatReply, error)
+type HeartBeatServiceClient interface {
+	HeartBeat(ctx context.Context, in *HeartBeatArgs, opts ...grpc.CallOption) (*HeartBeatReply, error)
 }
 
-type heartbeatServiceClient struct {
+type heartBeatServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewHeartbeatServiceClient(cc grpc.ClientConnInterface) HeartbeatServiceClient {
-	return &heartbeatServiceClient{cc}
+func NewHeartBeatServiceClient(cc grpc.ClientConnInterface) HeartBeatServiceClient {
+	return &heartBeatServiceClient{cc}
 }
 
-func (c *heartbeatServiceClient) Heartbeat(ctx context.Context, in *HeartbeatArgs, opts ...grpc.CallOption) (*HeartbeatReply, error) {
-	out := new(HeartbeatReply)
-	err := c.cc.Invoke(ctx, "/pb.HeartbeatService/Heartbeat", in, out, opts...)
+func (c *heartBeatServiceClient) HeartBeat(ctx context.Context, in *HeartBeatArgs, opts ...grpc.CallOption) (*HeartBeatReply, error) {
+	out := new(HeartBeatReply)
+	err := c.cc.Invoke(ctx, "/pb.HeartBeatService/HeartBeat", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// HeartbeatServiceServer is the server API for HeartbeatService service.
-// All implementations must embed UnimplementedHeartbeatServiceServer
+// HeartBeatServiceServer is the server API for HeartBeatService service.
+// All implementations must embed UnimplementedHeartBeatServiceServer
 // for forward compatibility
-type HeartbeatServiceServer interface {
-	Heartbeat(context.Context, *HeartbeatArgs) (*HeartbeatReply, error)
-	mustEmbedUnimplementedHeartbeatServiceServer()
+type HeartBeatServiceServer interface {
+	HeartBeat(context.Context, *HeartBeatArgs) (*HeartBeatReply, error)
+	mustEmbedUnimplementedHeartBeatServiceServer()
 }
 
-// UnimplementedHeartbeatServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedHeartbeatServiceServer struct {
+// UnimplementedHeartBeatServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedHeartBeatServiceServer struct {
 }
 
-func (UnimplementedHeartbeatServiceServer) Heartbeat(context.Context, *HeartbeatArgs) (*HeartbeatReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Heartbeat not implemented")
+func (UnimplementedHeartBeatServiceServer) HeartBeat(context.Context, *HeartBeatArgs) (*HeartBeatReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HeartBeat not implemented")
 }
-func (UnimplementedHeartbeatServiceServer) mustEmbedUnimplementedHeartbeatServiceServer() {}
+func (UnimplementedHeartBeatServiceServer) mustEmbedUnimplementedHeartBeatServiceServer() {}
 
-// UnsafeHeartbeatServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to HeartbeatServiceServer will
+// UnsafeHeartBeatServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to HeartBeatServiceServer will
 // result in compilation errors.
-type UnsafeHeartbeatServiceServer interface {
-	mustEmbedUnimplementedHeartbeatServiceServer()
+type UnsafeHeartBeatServiceServer interface {
+	mustEmbedUnimplementedHeartBeatServiceServer()
 }
 
-func RegisterHeartbeatServiceServer(s grpc.ServiceRegistrar, srv HeartbeatServiceServer) {
-	s.RegisterService(&HeartbeatService_ServiceDesc, srv)
+func RegisterHeartBeatServiceServer(s grpc.ServiceRegistrar, srv HeartBeatServiceServer) {
+	s.RegisterService(&HeartBeatService_ServiceDesc, srv)
 }
 
-func _HeartbeatService_Heartbeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HeartbeatArgs)
+func _HeartBeatService_HeartBeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HeartBeatArgs)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HeartbeatServiceServer).Heartbeat(ctx, in)
+		return srv.(HeartBeatServiceServer).HeartBeat(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.HeartbeatService/Heartbeat",
+		FullMethod: "/pb.HeartBeatService/HeartBeat",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HeartbeatServiceServer).Heartbeat(ctx, req.(*HeartbeatArgs))
+		return srv.(HeartBeatServiceServer).HeartBeat(ctx, req.(*HeartBeatArgs))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// HeartbeatService_ServiceDesc is the grpc.ServiceDesc for HeartbeatService service.
+// HeartBeatService_ServiceDesc is the grpc.ServiceDesc for HeartBeatService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var HeartbeatService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.HeartbeatService",
-	HandlerType: (*HeartbeatServiceServer)(nil),
+var HeartBeatService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.HeartBeatService",
+	HandlerType: (*HeartBeatServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Heartbeat",
-			Handler:    _HeartbeatService_Heartbeat_Handler,
+			MethodName: "HeartBeat",
+			Handler:    _HeartBeatService_HeartBeat_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "Heartbeat.proto",
+	Metadata: "HeartBeat.proto",
 }

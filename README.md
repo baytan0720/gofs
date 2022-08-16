@@ -41,3 +41,6 @@ protoc -I .\internal\service\pb .\internal\service\pb\FileReplicate.proto --go-g
 ### 8.6
 进一步优化心跳机制和重连机制
 实现DataNode block信息上报
+
+### 8.16
+实现Put方法

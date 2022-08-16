@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.28.1
 // 	protoc        v3.21.4
-// source: Blockreport.proto
+// source: BlockReport.proto
 
 package service
 
@@ -25,15 +25,15 @@ type Block struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name    string `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
+	Id      string `protobuf:"bytes,1,opt,name=Id,proto3" json:"Id,omitempty"`
 	Modtime string `protobuf:"bytes,2,opt,name=Modtime,proto3" json:"Modtime,omitempty"`
-	Size    uint64 `protobuf:"varint,3,opt,name=size,proto3" json:"size,omitempty"`
+	Size    uint64 `protobuf:"varint,3,opt,name=Size,proto3" json:"Size,omitempty"`
 }
 
 func (x *Block) Reset() {
 	*x = Block{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_Blockreport_proto_msgTypes[0]
+		mi := &file_BlockReport_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -46,7 +46,7 @@ func (x *Block) String() string {
 func (*Block) ProtoMessage() {}
 
 func (x *Block) ProtoReflect() protoreflect.Message {
-	mi := &file_Blockreport_proto_msgTypes[0]
+	mi := &file_BlockReport_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,12 +59,12 @@ func (x *Block) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Block.ProtoReflect.Descriptor instead.
 func (*Block) Descriptor() ([]byte, []int) {
-	return file_Blockreport_proto_rawDescGZIP(), []int{0}
+	return file_BlockReport_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Block) GetName() string {
+func (x *Block) GetId() string {
 	if x != nil {
-		return x.Name
+		return x.Id
 	}
 	return ""
 }
@@ -83,7 +83,7 @@ func (x *Block) GetSize() uint64 {
 	return 0
 }
 
-type BlockreportArgs struct {
+type BlockReportArgs struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -92,23 +92,23 @@ type BlockreportArgs struct {
 	Blocklist []*Block `protobuf:"bytes,2,rep,name=Blocklist,proto3" json:"Blocklist,omitempty"`
 }
 
-func (x *BlockreportArgs) Reset() {
-	*x = BlockreportArgs{}
+func (x *BlockReportArgs) Reset() {
+	*x = BlockReportArgs{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_Blockreport_proto_msgTypes[1]
+		mi := &file_BlockReport_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *BlockreportArgs) String() string {
+func (x *BlockReportArgs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*BlockreportArgs) ProtoMessage() {}
+func (*BlockReportArgs) ProtoMessage() {}
 
-func (x *BlockreportArgs) ProtoReflect() protoreflect.Message {
-	mi := &file_Blockreport_proto_msgTypes[1]
+func (x *BlockReportArgs) ProtoReflect() protoreflect.Message {
+	mi := &file_BlockReport_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -119,26 +119,26 @@ func (x *BlockreportArgs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use BlockreportArgs.ProtoReflect.Descriptor instead.
-func (*BlockreportArgs) Descriptor() ([]byte, []int) {
-	return file_Blockreport_proto_rawDescGZIP(), []int{1}
+// Deprecated: Use BlockReportArgs.ProtoReflect.Descriptor instead.
+func (*BlockReportArgs) Descriptor() ([]byte, []int) {
+	return file_BlockReport_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *BlockreportArgs) GetId() int32 {
+func (x *BlockReportArgs) GetId() int32 {
 	if x != nil {
 		return x.Id
 	}
 	return 0
 }
 
-func (x *BlockreportArgs) GetBlocklist() []*Block {
+func (x *BlockReportArgs) GetBlocklist() []*Block {
 	if x != nil {
 		return x.Blocklist
 	}
 	return nil
 }
 
-type BlockreportReply struct {
+type BlockReportReply struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -146,23 +146,23 @@ type BlockreportReply struct {
 	ACK int32 `protobuf:"varint,1,opt,name=ACK,proto3" json:"ACK,omitempty"`
 }
 
-func (x *BlockreportReply) Reset() {
-	*x = BlockreportReply{}
+func (x *BlockReportReply) Reset() {
+	*x = BlockReportReply{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_Blockreport_proto_msgTypes[2]
+		mi := &file_BlockReport_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *BlockreportReply) String() string {
+func (x *BlockReportReply) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*BlockreportReply) ProtoMessage() {}
+func (*BlockReportReply) ProtoMessage() {}
 
-func (x *BlockreportReply) ProtoReflect() protoreflect.Message {
-	mi := &file_Blockreport_proto_msgTypes[2]
+func (x *BlockReportReply) ProtoReflect() protoreflect.Message {
+	mi := &file_BlockReport_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -173,66 +173,66 @@ func (x *BlockreportReply) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use BlockreportReply.ProtoReflect.Descriptor instead.
-func (*BlockreportReply) Descriptor() ([]byte, []int) {
-	return file_Blockreport_proto_rawDescGZIP(), []int{2}
+// Deprecated: Use BlockReportReply.ProtoReflect.Descriptor instead.
+func (*BlockReportReply) Descriptor() ([]byte, []int) {
+	return file_BlockReport_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *BlockreportReply) GetACK() int32 {
+func (x *BlockReportReply) GetACK() int32 {
 	if x != nil {
 		return x.ACK
 	}
 	return 0
 }
 
-var File_Blockreport_proto protoreflect.FileDescriptor
+var File_BlockReport_proto protoreflect.FileDescriptor
 
-var file_Blockreport_proto_rawDesc = []byte{
-	0x0a, 0x11, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x12, 0x02, 0x70, 0x62, 0x22, 0x49, 0x0a, 0x05, 0x42, 0x6c, 0x6f, 0x63, 0x6b,
-	0x12, 0x12, 0x0a, 0x04, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
-	0x4e, 0x61, 0x6d, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x4d, 0x6f, 0x64, 0x74, 0x69, 0x6d, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x4d, 0x6f, 0x64, 0x74, 0x69, 0x6d, 0x65, 0x12, 0x12,
-	0x0a, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x04, 0x73, 0x69,
-	0x7a, 0x65, 0x22, 0x4a, 0x0a, 0x0f, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x72, 0x65, 0x70, 0x6f, 0x72,
-	0x74, 0x41, 0x72, 0x67, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x05, 0x52, 0x02, 0x49, 0x64, 0x12, 0x27, 0x0a, 0x09, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x6c, 0x69,
-	0x73, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x70, 0x62, 0x2e, 0x42, 0x6c,
-	0x6f, 0x63, 0x6b, 0x52, 0x09, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x22, 0x24,
-	0x0a, 0x10, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x52, 0x65, 0x70,
-	0x6c, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x41, 0x43, 0x4b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52,
-	0x03, 0x41, 0x43, 0x4b, 0x32, 0x4e, 0x0a, 0x12, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x72, 0x65, 0x70,
-	0x6f, 0x72, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x38, 0x0a, 0x0b, 0x42, 0x6c,
-	0x6f, 0x63, 0x6b, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x12, 0x13, 0x2e, 0x70, 0x62, 0x2e, 0x42,
-	0x6c, 0x6f, 0x63, 0x6b, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x14,
-	0x2e, 0x70, 0x62, 0x2e, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x72, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x52,
-	0x65, 0x70, 0x6c, 0x79, 0x42, 0x1b, 0x5a, 0x19, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61,
-	0x6c, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x3b, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+var file_BlockReport_proto_rawDesc = []byte{
+	0x0a, 0x11, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x12, 0x02, 0x70, 0x62, 0x22, 0x45, 0x0a, 0x05, 0x42, 0x6c, 0x6f, 0x63, 0x6b,
+	0x12, 0x0e, 0x0a, 0x02, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x49, 0x64,
+	0x12, 0x18, 0x0a, 0x07, 0x4d, 0x6f, 0x64, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x4d, 0x6f, 0x64, 0x74, 0x69, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x53, 0x69,
+	0x7a, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x04, 0x53, 0x69, 0x7a, 0x65, 0x22, 0x4a,
+	0x0a, 0x0f, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x41, 0x72, 0x67,
+	0x73, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x49,
+	0x64, 0x12, 0x27, 0x0a, 0x09, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x02,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x70, 0x62, 0x2e, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x52,
+	0x09, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x22, 0x24, 0x0a, 0x10, 0x42, 0x6c,
+	0x6f, 0x63, 0x6b, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x10,
+	0x0a, 0x03, 0x41, 0x43, 0x4b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x03, 0x41, 0x43, 0x4b,
+	0x32, 0x4e, 0x0a, 0x12, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x53,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x38, 0x0a, 0x0b, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x52,
+	0x65, 0x70, 0x6f, 0x72, 0x74, 0x12, 0x13, 0x2e, 0x70, 0x62, 0x2e, 0x42, 0x6c, 0x6f, 0x63, 0x6b,
+	0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x41, 0x72, 0x67, 0x73, 0x1a, 0x14, 0x2e, 0x70, 0x62, 0x2e,
+	0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x52, 0x65, 0x70, 0x6c, 0x79,
+	0x42, 0x1b, 0x5a, 0x19, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x73, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x3b, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_Blockreport_proto_rawDescOnce sync.Once
-	file_Blockreport_proto_rawDescData = file_Blockreport_proto_rawDesc
+	file_BlockReport_proto_rawDescOnce sync.Once
+	file_BlockReport_proto_rawDescData = file_BlockReport_proto_rawDesc
 )
 
-func file_Blockreport_proto_rawDescGZIP() []byte {
-	file_Blockreport_proto_rawDescOnce.Do(func() {
-		file_Blockreport_proto_rawDescData = protoimpl.X.CompressGZIP(file_Blockreport_proto_rawDescData)
+func file_BlockReport_proto_rawDescGZIP() []byte {
+	file_BlockReport_proto_rawDescOnce.Do(func() {
+		file_BlockReport_proto_rawDescData = protoimpl.X.CompressGZIP(file_BlockReport_proto_rawDescData)
 	})
-	return file_Blockreport_proto_rawDescData
+	return file_BlockReport_proto_rawDescData
 }
 
-var file_Blockreport_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_Blockreport_proto_goTypes = []interface{}{
+var file_BlockReport_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_BlockReport_proto_goTypes = []interface{}{
 	(*Block)(nil),            // 0: pb.Block
-	(*BlockreportArgs)(nil),  // 1: pb.BlockreportArgs
-	(*BlockreportReply)(nil), // 2: pb.BlockreportReply
+	(*BlockReportArgs)(nil),  // 1: pb.BlockReportArgs
+	(*BlockReportReply)(nil), // 2: pb.BlockReportReply
 }
-var file_Blockreport_proto_depIdxs = []int32{
-	0, // 0: pb.BlockreportArgs.Blocklist:type_name -> pb.Block
-	1, // 1: pb.BlockreportService.Blockreport:input_type -> pb.BlockreportArgs
-	2, // 2: pb.BlockreportService.Blockreport:output_type -> pb.BlockreportReply
+var file_BlockReport_proto_depIdxs = []int32{
+	0, // 0: pb.BlockReportArgs.Blocklist:type_name -> pb.Block
+	1, // 1: pb.BlockReportService.BlockReport:input_type -> pb.BlockReportArgs
+	2, // 2: pb.BlockReportService.BlockReport:output_type -> pb.BlockReportReply
 	2, // [2:3] is the sub-list for method output_type
 	1, // [1:2] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -240,13 +240,13 @@ var file_Blockreport_proto_depIdxs = []int32{
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_Blockreport_proto_init() }
-func file_Blockreport_proto_init() {
-	if File_Blockreport_proto != nil {
+func init() { file_BlockReport_proto_init() }
+func file_BlockReport_proto_init() {
+	if File_BlockReport_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_Blockreport_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_BlockReport_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Block); i {
 			case 0:
 				return &v.state
@@ -258,8 +258,8 @@ func file_Blockreport_proto_init() {
 				return nil
 			}
 		}
-		file_Blockreport_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*BlockreportArgs); i {
+		file_BlockReport_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BlockReportArgs); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -270,8 +270,8 @@ func file_Blockreport_proto_init() {
 				return nil
 			}
 		}
-		file_Blockreport_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*BlockreportReply); i {
+		file_BlockReport_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BlockReportReply); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -287,18 +287,18 @@ func file_Blockreport_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_Blockreport_proto_rawDesc,
+			RawDescriptor: file_BlockReport_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_Blockreport_proto_goTypes,
-		DependencyIndexes: file_Blockreport_proto_depIdxs,
-		MessageInfos:      file_Blockreport_proto_msgTypes,
+		GoTypes:           file_BlockReport_proto_goTypes,
+		DependencyIndexes: file_BlockReport_proto_depIdxs,
+		MessageInfos:      file_BlockReport_proto_msgTypes,
 	}.Build()
-	File_Blockreport_proto = out.File
-	file_Blockreport_proto_rawDesc = nil
-	file_Blockreport_proto_goTypes = nil
-	file_Blockreport_proto_depIdxs = nil
+	File_BlockReport_proto = out.File
+	file_BlockReport_proto_rawDesc = nil
+	file_BlockReport_proto_goTypes = nil
+	file_BlockReport_proto_depIdxs = nil
 }

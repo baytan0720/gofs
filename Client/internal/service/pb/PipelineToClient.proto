@@ -1,0 +1,16 @@
+syntax="proto3";
+package pb;  // 生成的go文件所属包名
+option go_package="/internal/service;service";
+
+message PipelineToClientArgs {
+  repeated uint32 OtherDNId = 1;
+}
+
+message PipelineToClientReply {
+  uint32 ACK = 1;   //1 ok ;0 err
+  string Err = 2;
+}
+
+service PipelineToClientService {
+  rpc PipelineToClient(PipelineToClientArgs) returns(PipelineToClientReply);
+}

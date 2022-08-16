@@ -22,7 +22,7 @@ func Scanblock() []*service.Block {
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		timeLayoutStr := "2006-01-02 15:04"
 		blocks = append(blocks, &service.Block{
-			Name:    info.Name(),
+			Id:      info.Name(),
 			Modtime: info.ModTime().Format(timeLayoutStr),
 			Size:    uint64(info.Size()),
 		})

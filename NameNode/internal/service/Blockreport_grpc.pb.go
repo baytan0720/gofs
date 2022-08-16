@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.4
-// source: Blockreport.proto
+// source: BlockReport.proto
 
 package service
 
@@ -18,88 +18,88 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// BlockreportServiceClient is the client API for BlockreportService service.
+// BlockReportServiceClient is the client API for BlockReportService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type BlockreportServiceClient interface {
-	Blockreport(ctx context.Context, in *BlockreportArgs, opts ...grpc.CallOption) (*BlockreportReply, error)
+type BlockReportServiceClient interface {
+	BlockReport(ctx context.Context, in *BlockReportArgs, opts ...grpc.CallOption) (*BlockReportReply, error)
 }
 
-type blockreportServiceClient struct {
+type blockReportServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewBlockreportServiceClient(cc grpc.ClientConnInterface) BlockreportServiceClient {
-	return &blockreportServiceClient{cc}
+func NewBlockReportServiceClient(cc grpc.ClientConnInterface) BlockReportServiceClient {
+	return &blockReportServiceClient{cc}
 }
 
-func (c *blockreportServiceClient) Blockreport(ctx context.Context, in *BlockreportArgs, opts ...grpc.CallOption) (*BlockreportReply, error) {
-	out := new(BlockreportReply)
-	err := c.cc.Invoke(ctx, "/pb.BlockreportService/Blockreport", in, out, opts...)
+func (c *blockReportServiceClient) BlockReport(ctx context.Context, in *BlockReportArgs, opts ...grpc.CallOption) (*BlockReportReply, error) {
+	out := new(BlockReportReply)
+	err := c.cc.Invoke(ctx, "/pb.BlockReportService/BlockReport", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// BlockreportServiceServer is the server API for BlockreportService service.
-// All implementations must embed UnimplementedBlockreportServiceServer
+// BlockReportServiceServer is the server API for BlockReportService service.
+// All implementations must embed UnimplementedBlockReportServiceServer
 // for forward compatibility
-type BlockreportServiceServer interface {
-	Blockreport(context.Context, *BlockreportArgs) (*BlockreportReply, error)
-	mustEmbedUnimplementedBlockreportServiceServer()
+type BlockReportServiceServer interface {
+	BlockReport(context.Context, *BlockReportArgs) (*BlockReportReply, error)
+	mustEmbedUnimplementedBlockReportServiceServer()
 }
 
-// UnimplementedBlockreportServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedBlockreportServiceServer struct {
+// UnimplementedBlockReportServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedBlockReportServiceServer struct {
 }
 
-func (UnimplementedBlockreportServiceServer) Blockreport(context.Context, *BlockreportArgs) (*BlockreportReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Blockreport not implemented")
+func (UnimplementedBlockReportServiceServer) BlockReport(context.Context, *BlockReportArgs) (*BlockReportReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockReport not implemented")
 }
-func (UnimplementedBlockreportServiceServer) mustEmbedUnimplementedBlockreportServiceServer() {}
+func (UnimplementedBlockReportServiceServer) mustEmbedUnimplementedBlockReportServiceServer() {}
 
-// UnsafeBlockreportServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to BlockreportServiceServer will
+// UnsafeBlockReportServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to BlockReportServiceServer will
 // result in compilation errors.
-type UnsafeBlockreportServiceServer interface {
-	mustEmbedUnimplementedBlockreportServiceServer()
+type UnsafeBlockReportServiceServer interface {
+	mustEmbedUnimplementedBlockReportServiceServer()
 }
 
-func RegisterBlockreportServiceServer(s grpc.ServiceRegistrar, srv BlockreportServiceServer) {
-	s.RegisterService(&BlockreportService_ServiceDesc, srv)
+func RegisterBlockReportServiceServer(s grpc.ServiceRegistrar, srv BlockReportServiceServer) {
+	s.RegisterService(&BlockReportService_ServiceDesc, srv)
 }
 
-func _BlockreportService_Blockreport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BlockreportArgs)
+func _BlockReportService_BlockReport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockReportArgs)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BlockreportServiceServer).Blockreport(ctx, in)
+		return srv.(BlockReportServiceServer).BlockReport(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.BlockreportService/Blockreport",
+		FullMethod: "/pb.BlockReportService/BlockReport",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BlockreportServiceServer).Blockreport(ctx, req.(*BlockreportArgs))
+		return srv.(BlockReportServiceServer).BlockReport(ctx, req.(*BlockReportArgs))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// BlockreportService_ServiceDesc is the grpc.ServiceDesc for BlockreportService service.
+// BlockReportService_ServiceDesc is the grpc.ServiceDesc for BlockReportService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var BlockreportService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.BlockreportService",
-	HandlerType: (*BlockreportServiceServer)(nil),
+var BlockReportService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.BlockReportService",
+	HandlerType: (*BlockReportServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Blockreport",
-			Handler:    _BlockreportService_Blockreport_Handler,
+			MethodName: "BlockReport",
+			Handler:    _BlockReportService_BlockReport_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "Blockreport.proto",
+	Metadata: "BlockReport.proto",
 }

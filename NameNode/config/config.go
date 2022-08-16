@@ -10,8 +10,9 @@ import (
 
 //结构体字段首字母必须大写
 type config struct {
-	Port string
-	GOOS string
+	Port      string
+	BlockSize uint64
+	GOOS      string
 }
 
 var Config *config

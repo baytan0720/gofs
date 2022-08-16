@@ -7,8 +7,11 @@ import (
 	"net"
 	"sync"
 
+	"github.com/yitter/idgenerator-go/idgen"
 	"google.golang.org/grpc"
 )
+
+var options = idgen.NewIdGeneratorOptions(1)
 
 type NameNode struct {
 	NumDataNode  int
@@ -17,14 +20,18 @@ type NameNode struct {
 	DataNodeList []*DataNode
 	mu           *sync.Mutex
 
-	service.UnimplementedHeartbeatServiceServer
+	service.UnimplementedHeartBeatServiceServer
 	service.UnimplementedRegisterServiceServer
-	service.UnimplementedBlockreportServiceServer
+	service.UnimplementedBlockReportServiceServer
+	service.UnimplementedDNInfoServiceServer
+	service.UnimplementedPutFileServiceServer
+	service.UnimplementedPutBlockServiceServer
 }
 
 //MakeNameNode 创建NameNode
 func MakeNameNode() *NameNode {
 	config.Opencfg()
+	idgen.SetIdGenerator(options)
 
 	nn := NameNode{
 		idChan:       make(chan int, 10),
@@ -42,8 +49,11 @@ func (nn *NameNode) Server() {
 	}
 	s := grpc.NewServer()
 	service.RegisterRegisterServiceServer(s, nn)
-	service.RegisterHeartbeatServiceServer(s, nn)
-	service.RegisterBlockreportServiceServer(s, nn)
+	service.RegisterHeartBeatServiceServer(s, nn)
+	service.RegisterBlockReportServiceServer(s, nn)
+	service.RegisterDNInfoServiceServer(s, nn)
+	service.RegisterPutFileServiceServer(s, nn)
+	service.RegisterPutBlockServiceServer(s, nn)
 	log.Println("NameNode is running, listen on " + "127.0.0.1" + config.Config.Port)
 	s.Serve(l)
 }

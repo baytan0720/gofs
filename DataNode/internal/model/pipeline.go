@@ -1,102 +1,120 @@
 package model
 
 import (
-	"fmt"
+	"context"
+	"crypto/md5"
 	"gofs/DataNode/internal/service"
 	"log"
 	"net"
-	"strings"
-	"time"
+	"strconv"
 
-	"google.golang.org/protobuf/proto"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-//ListenSocket 用于建立socket连接，等待文件传输
-func (dn *DataNode) ListenSocket() {
-	server, err := net.Listen("tcp", dn.Addr)
-	log.Println(dn.Addr + " is Listening")
+func (dn *DataNode) PipelineToClient(ctx context.Context, args *service.PipelineToClientArgs) (*service.PipelineToClientReply, error) {
+	s, err := net.Listen("tcp", dn.tcpAddr)
 	if err != nil {
-		log.Println(err)
+		return &service.PipelineToClientReply{ACK: 0}, nil
 	}
-	for {
-		connection, err := server.Accept()
+
+	otherdnconn := make([]net.Conn, 2)
+	for i := 0; i < 2; i++ {
+		grpcconn, _ := grpc.Dial(":"+strconv.Itoa(int(args.OtherDNId[i]+1024)), grpc.WithTransportCredentials(insecure.NewCredentials()))
+		c := service.NewPipelineToDNServiceClient(grpcconn)
+		c.PipelineToDN(context.Background(), &service.PipelineToDNArgs{Id: dn.Id})
+		conn, err := s.Accept()
 		if err != nil {
-			log.Println("Error accepting: ", err.Error())
+			log.Println(err)
+			return &service.PipelineToClientReply{ACK: 0}, nil
 		}
-		fmt.Println("client connected")
-		//bufio.NewReader(connection)
-		go processClient(connection, dn)
+		log.Println(i+1, "connect")
+		otherdnconn[i] = conn
+		grpcconn.Close()
 	}
+
+	go func() {
+		defer s.Close()
+		conn, _ := s.Accept()
+		defer conn.Close()
+		blockId := make([]byte, 17)
+		_, err := conn.Read(blockId)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		correctMd5 := make([]byte, 16)
+		_, err = conn.Read(correctMd5)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		conn.Write([]byte{'1'})
+
+		b := make([]byte, 4096)
+		n, err := conn.Read(b)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		//数据校验
+		Md5 := md5.Sum(b[:n])
+		for i := 0; i < 16; i++ {
+			if correctMd5[i] != Md5[i] {
+				conn.Write([]byte{'0'})
+				return
+			}
+		}
+
+		for i := 0; i < 2; i++ {
+			otherdnconn[i].Write(blockId)
+			otherdnconn[i].Write(correctMd5)
+			otherdnconn[i].Write(b[:n])
+		}
+
+		conn.Write([]byte{'1'})
+	}()
+	return &service.PipelineToClientReply{ACK: 1}, nil
 }
 
-func processClient(conn net.Conn, dn *DataNode) {
-	buffer := make([]byte, 2048)
-	err := conn.SetReadDeadline(time.Now().Add(2 * time.Second))
+func (dn *DataNode) PipelineToDN(ctx context.Context, args *service.PipelineToDNArgs) (*service.PipelineToDNReply, error) {
+	conn, err := net.Dial("tcp", ":"+strconv.Itoa(int(args.Id+2048)))
 	if err != nil {
 		log.Println(err)
+		return &service.PipelineToDNReply{ACK: 0}, nil
 	}
-	mLen, err := conn.Read(buffer)
-	if err != nil || mLen == 0 {
-		fmt.Println("Error reading:", err.Error())
-	}
-	req := &service.ReplicationRequest{}
-	err = proto.Unmarshal(buffer[:mLen], req)
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Println("Receive code ", req.OperationType)
-	if req.OperationType == 2 {
-		// 表示客户端发送Get请求
-		file, _ := ReadDisk(req.BlockName, "7515")
-		res := &service.ReplicationResponse{
-			ResponseType: 2,
-			File:         file,
+
+	go func() {
+		blockId := make([]byte, 17)
+		_, err = conn.Read(blockId)
+		if err != nil {
+			log.Println(err)
+			return
 		}
-		d, _ := proto.Marshal(res)
-		conn.Write(d)
-		fmt.Println("Write Done ", res.ResponseType)
-		// 等待Write完毕且客户端Read完毕
-		time.Sleep(time.Second)
-
-	} else {
-		// 表示客户端发送Put请求
-		// 循环 直到OT==0表示block上传完毕
-		for req.OperationType == 1 {
-			// block落盘
-			block, err := WriteDisk(req.File, strings.Split(dn.Addr, ":")[1])
-			dn.Blocklist = append(dn.Blocklist, block)
-
-			// 写入反馈
-			res := &service.ReplicationResponse{
-				ResponseType: 1,
-				Error:        nil,
-				BlockName:    block.Name,
-			}
-			if err != nil {
-				res.ResponseType = 0
-				res.Error = append(res.Error, &service.ReplicationError{ErrorContent: err.Error()})
-			}
-			d, _ := proto.Marshal(res)
-			conn.Write(d)
-
-			// 读取Client
-			buffer = make([]byte, 2048)
-			err = conn.SetReadDeadline(time.Now().Add(2 * time.Second))
-			if err != nil {
-				log.Println(err)
-			}
-			mLen, err = conn.Read(buffer)
-			if err != nil || mLen == 0 {
-				fmt.Println("Error reading:", err.Error())
-			}
-			req = &service.ReplicationRequest{}
-			err = proto.Unmarshal(buffer[:mLen], req)
-			if err != nil {
-				log.Println(err)
-			}
-			fmt.Println("Receive code ", req.OperationType)
+		correctMd5 := make([]byte, 16)
+		_, err = conn.Read(correctMd5)
+		if err != nil {
+			log.Println(err)
+			return
 		}
-	}
-	log.Println(conn.RemoteAddr().String() + " closed")
-	conn.Close()
+
+		b := make([]byte, 4096)
+		n, err := conn.Read(b)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		//数据校验
+		Md5 := md5.Sum(b[:n])
+		for i := 0; i < 16; i++ {
+			if correctMd5[i] != Md5[i] {
+				conn.Write([]byte{'0'})
+			}
+		}
+		conn.Close()
+	}()
+
+	return &service.PipelineToDNReply{ACK: 1}, nil
 }
