@@ -66,6 +66,7 @@ func (dn *DataNode) PipelineToClient(ctx context.Context, args *service.Pipeline
 				return
 			}
 		}
+		go dn.WriteBlock(b, blockId)
 
 		for i := 0; i < 2; i++ {
 			otherdnconn[i].Write(blockId)

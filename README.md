@@ -44,3 +44,9 @@ protoc -I .\internal\service\pb .\internal\service\pb\FileReplicate.proto --go-g
 
 ### 8.16
 实现Put方法
+实现Client端命令行解析
+
+查看命令
+```bash
+./gofs help
+```
