@@ -28,12 +28,25 @@ cd Client && go run *.go
 * 安装grpc和protobuf
 * 进入DataNode目录
 ```bash
-protoc -I .\internal\service\pb .\internal\service\pb\*.proto --go_out=plugins=grpc:.
+protoc -I .\internal\service\pb .\internal\service\pb\FileReplicate.proto --go-grpc_out="." --go_out="."
 ```
 一般流程如下
 1. 编写proto文件，指定rpc的输入和输出并定义rpc服务
 2. 在服务端，实现rpcServiceServer方法，并且进行注册
-3. 在客户端，编写调用rpcServiceClient方法的函数即刻
+3. 在客户端，编写调用rpcServiceClient方法的函数即可
 
 ### 8.5
 优化逻辑
+
+### 8.6
+进一步优化心跳机制和重连机制
+实现DataNode block信息上报
+
+### 8.16
+实现Put方法
+实现Client端命令行解析
+
+查看命令
+```bash
+./gofs help
+```

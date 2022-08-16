@@ -1,14 +1,15 @@
 syntax="proto3";
+package pb;  // 生成的go文件所属包名
 option go_package="/internal/service;service";
 
-message HeartbeatArgs {
-  int32 Id=1;
+message HeartBeatArgs {
+  int32 Id = 1;
+}    
+
+message HeartBeatReply {
+  int32 ACK = 1;
 }
 
-message HeartbeatReply {
-
-}
-
-service HeartbeatService {
-  rpc Heartbeat(HeartbeatArgs) returns(HeartbeatReply);
+service HeartBeatService {
+  rpc HeartBeat(HeartBeatArgs) returns(HeartBeatReply);
 }

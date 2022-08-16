@@ -6,7 +6,6 @@ import (
 
 func main() {
 	dn := model.MakeDataNode()
-	go dn.Heartbeat()
-
+	dn.Server()
 	select {}
 }

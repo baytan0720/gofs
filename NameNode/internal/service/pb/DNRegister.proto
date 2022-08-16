@@ -7,8 +7,8 @@ message DNRegisterArgs {
 }
 
 message DNRegisterReply {
-  uint32 Id=1;
-  string Addr=2;
+  uint32 Id = 1;
+  string Addr = 2;
 }
 
 service RegisterService {

@@ -10,8 +10,9 @@ import (
 
 //结构体字段首字母必须大写
 type config struct {
-	NumDataNodeLimit int
-	Port             string
+	Port      string
+	BlockSize uint64
+	GOOS      string
 }
 
 var Config *config
@@ -25,7 +26,7 @@ func Opencfg() {
 	} else {
 		path = "../config/config.toml"
 	}
-	Config = &config{}
+	Config = &config{GOOS: sysType}
 	_, err := toml.DecodeFile(path, Config)
 	if err != nil {
 		log.Fatal("Config read fail ", err.Error())
