@@ -1,5 +1,0 @@
-#Client配置文件
-
-#RPC配置
-addr = "127.0.0.1"          #NameNode地址
-port = ":1234"              #NameNode端口

@@ -1,5 +1,0 @@
-#DameNode配置文件
-
-#NameNode地址
-addr = "127.0.0.1"
-port = ":1234"
