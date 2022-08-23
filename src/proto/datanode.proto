@@ -1,0 +1,53 @@
+syntax="proto3";
+package service;
+option go_package="/service;service";
+
+import "statuscode.proto";
+import "block.proto";
+import "namenode.proto";
+
+message WriteBlockArgs {
+    string BlockId = 1;
+    string Md5 = 2;
+    bytes DataBuf = 3;
+    int64 Size = 4;
+    int64 EntryId = 5;
+    int32 index = 6;
+    repeated int32 DatanodeIds = 7;
+}
+
+message WriteBlockReply {
+    StatusCode Status = 1;
+}
+
+message ReadBlockArgs {
+    int64 BlockId = 1;
+}
+message ReadBlockReply {
+    StatusCode Status = 1;
+    bytes DataBuf = 2;
+}
+
+message GetBlockInfoArgs {
+    int64 BlockId = 1;
+}
+message GetBlockInfoReply {
+    StatusCode Status = 1;
+    BlockInfo Info = 2;
+}
+
+message CreatePipelineArgs {
+    int32 index = 1;
+    repeated SimDataNodeInfo DataNodes = 2;
+}
+
+message CreatePipelineReply {
+    StatusCode Status = 1;
+}
+
+service DataNodeService {
+    rpc WriteBlock(WriteBlockArgs) returns(WriteBlockReply);
+    rpc ReadBlock(ReadBlockArgs) returns(ReadBlockReply);
+    rpc GetBlockInfo(GetBlockInfoArgs) returns(GetBlockInfoReply);
+    rpc CreatePipeline(CreatePipelineArgs) returns(CreatePipelineReply);
+}

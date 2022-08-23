@@ -1,0 +1,27 @@
+syntax="proto3";
+package service;
+option go_package="/service;service";
+
+enum StatusCode {
+    OK = 0;
+    NotOK = 1;
+    NotRegister = 2;
+}
+
+enum NameNodeStatus {
+    nSafeMode = 0;
+    nActive = 1;
+    nWritting = 2;
+}
+
+enum DataNodeStatus {
+    dActive = 0;
+}
+
+enum FileStatus {
+    fPathFound = 0;
+    fPathNotFound = 1;
+    fIsDirectory = 2;
+    fIsFile = 3;
+    fExist = 4;
+}

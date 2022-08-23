@@ -1,0 +1,193 @@
+syntax="proto3";
+package service;
+option go_package="/service;service";
+
+import "statuscode.proto";
+import "block.proto";
+
+message DataNodeInfo {
+    int32 Id = 1;
+    string Addr = 2;
+    string Port = 3;
+    string StartTime = 4;
+    DataNodeStatus Status = 5;
+    int64 DiskQuota = 6;
+    int64 UsedDisk = 7;
+    int32 BlockNum = 8;
+    repeated BlockInfo Blocks = 9;
+}
+
+message SimDataNodeInfo {
+    int32 Id = 1;
+    string Addr = 2;
+    string Port = 3;
+}
+
+message FileInfo {
+    FileStatus FileType = 1;
+    int64 Size = 2;
+    string modtime = 3;
+}
+
+message RegisterArgs {
+    DataNodeInfo Info = 1;
+}
+
+message RegisterReply {
+    StatusCode Status = 1;
+    int32 Id = 2;
+}
+
+message HeartBeatArgs {
+    int32 Id = 1;
+}
+
+message HeartBeatReply {
+    StatusCode Status = 1;
+    repeated string CleanBlockId = 2;
+}
+
+message BlockReportArgs {
+    int32 Id = 1;
+    repeated BlockInfo Blocks = 2;
+}
+
+message BlockReportReply {
+    StatusCode Status = 1;
+}
+
+message NewBlockReportArgs {
+    int32 Id = 1;
+    int64 EntryId = 2;
+    BlockInfo Block = 3;
+}
+
+message NewBlockReportReply {
+    StatusCode Status = 1;
+}
+
+message GetSystemInfoArgs {
+
+}
+
+message GetSystemInfoReply {
+    NameNodeStatus NnStatus = 1;
+    int32 ReplicaNum = 2;
+    int64 BlockSize = 3;
+    int64 TotalDiskQuota = 4;
+    int64 UsedDisk = 5;
+    repeated DataNodeInfo DataNodes = 6;
+}
+
+message PutFileArgs {
+    string Path = 1;
+    string FileName = 2;
+    int64 FileSize = 3;
+}
+
+message PutFileReply {
+    StatusCode Status = 1;
+    FileStatus FileStatus = 2;
+    int64 BlockSize = 3;
+    int64 EntryId = 4;
+    repeated string BlockId = 5;
+}
+
+message PutBlockArgs {
+    int64 EntryId = 1;
+    string BlockId = 2;
+    int64 BlockSize = 3;
+}
+
+message PutBlockReply {
+    StatusCode Status = 1;
+    repeated SimDataNodeInfo DataNodes = 2;
+}
+
+message MkdirArgs {
+    string Path = 1;
+    string DirName = 2;
+}
+
+message MkdirReply {
+    StatusCode Status = 1;
+    FileStatus FileStatus = 2;
+}
+
+message ListArgs {
+    string Path = 1;
+}
+
+message ListReply {
+    StatusCode Status = 1;
+    FileStatus FileStatus = 2;
+    repeated string Files = 3;
+}
+
+message RenameArgs {
+    string Path = 1;
+    string NewName = 2;
+}
+
+message RenameReply {
+    StatusCode Status = 1;
+    FileStatus FileStatus = 2;
+}
+
+message DeleteArgs {
+    string Path = 1;
+}
+
+message DeleteReply {
+    StatusCode Status = 1;
+    FileStatus FileStatus = 2;
+}
+
+message StatArgs {
+    string Path = 1;
+}
+
+message StatReply {
+    StatusCode Status = 1;
+    FileStatus FileStatus = 2;
+    FileInfo Info = 3;
+}
+
+message GetLeaseArgs {
+}
+
+message GetLeaseReply {
+    StatusCode Status = 1;
+    NameNodeStatus NameNodeStatus = 2;
+}
+
+message RenewLeaseArgs {
+}
+
+message RenewLeaseReply {
+}
+
+message ReleaseLeaseArgs {
+    int64 EntryId = 1;
+}
+
+message ReleaseLeaseReply {
+}
+
+service NameNodeService {
+    rpc Register(RegisterArgs) returns(RegisterReply);
+    rpc HeartBeat(HeartBeatArgs) returns(HeartBeatReply);
+    rpc BlockReport(BlockReportArgs) returns(BlockReportReply);
+    rpc NewBlockReport(NewBlockReportArgs) returns(NewBlockReportReply);
+    rpc GetSystemInfo(GetSystemInfoArgs) returns(GetSystemInfoReply);
+    rpc PutFile(PutFileArgs) returns(PutFileReply);
+    rpc PutBlock(PutBlockArgs) returns(PutBlockReply);
+    rpc Mkdir(MkdirArgs) returns(MkdirReply);
+    rpc List(ListArgs) returns(ListReply);
+    rpc Rename(RenameArgs) returns(RenameReply);
+    rpc Delete(DeleteArgs) returns(DeleteReply);
+    rpc Stat(StatArgs) returns(StatReply);
+    rpc GetLease(GetLeaseArgs) returns(GetLeaseReply);
+    rpc RenewLease (RenewLeaseArgs) returns (RenewLeaseReply);
+    rpc ReleaseLease (ReleaseLeaseArgs) returns (ReleaseLeaseReply);
+}

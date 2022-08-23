@@ -1,0 +1,8 @@
+syntax="proto3";
+package service;
+option go_package="/service;service";
+
+message BlockInfo {
+    string Id = 1;
+    int64 Size = 2;
+}
