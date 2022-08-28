@@ -13,7 +13,7 @@ import (
 
 const hextable = "0123456789abcdef"
 
-var pipeline map[int32]*grpc.ClientConn
+var pipeline map[int32]*grpc.ClientConn = make(map[int32]*grpc.ClientConn)
 var timer *time.Timer
 
 func (dn *DataNode) WriteBlock(ctx context.Context, args *service.WriteBlockArgs) (*service.WriteBlockReply, error) {
@@ -40,10 +40,18 @@ func (dn *DataNode) WriteBlock(ctx context.Context, args *service.WriteBlockArgs
 	return &service.WriteBlockReply{Status: service.StatusCode_OK}, nil
 }
 
+func (dn *DataNode) ReadBlock(ctx context.Context, args *service.ReadBlockArgs) (*service.ReadBlockReply, error) {
+	databuf, err := blockmanager.ReadBlock(dn.BlockPath, args.BlockId)
+	if err != nil {
+		return &service.ReadBlockReply{Status: service.StatusCode_NotOK}, err
+	}
+	return &service.ReadBlockReply{Status: service.StatusCode_OK, Md5: fastMD5(databuf), DataBuf: databuf}, nil
+}
+
 func (dn *DataNode) CreatePipeline(ctx context.Context, args *service.CreatePipelineArgs) (*service.CreatePipelineReply, error) {
 	if args.Index != 2 {
 		args.Index++
-		conn, err := grpc.Dial(args.DataNodes[args.Index+1].Addr+args.DataNodes[args.Index+1].Port, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		conn, err := grpc.Dial(args.DataNodes[args.Index].Addr+args.DataNodes[args.Index].Port, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			return &service.CreatePipelineReply{Status: service.StatusCode_NotOK}, nil
 		}
@@ -58,6 +66,7 @@ func (dn *DataNode) CreatePipeline(ctx context.Context, args *service.CreatePipe
 	go func(id int32) {
 		<-timer.C
 		pipeline[id].Close()
+		delete(pipeline, id)
 	}(args.DataNodes[args.Index].Id)
 	return &service.CreatePipelineReply{Status: service.StatusCode_OK}, nil
 }

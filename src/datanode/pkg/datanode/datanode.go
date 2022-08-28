@@ -31,8 +31,7 @@ type DataNode struct {
 	conn      *grpc.ClientConn
 	client    service.NameNodeServiceClient
 	blocklist []*service.BlockInfo
-	DiskQuota int64
-	UsedDisk  int64
+	load      *service.DataNodeLoad
 
 	service.UnimplementedDataNodeServiceServer
 }
@@ -40,10 +39,12 @@ type DataNode struct {
 func MakeDataNode() *DataNode {
 	dn := &DataNode{
 		addr: "127.0.0.1",
+		load: &service.DataNodeLoad{},
 	}
 	dn.opencfg()
 	dn.Register()
 	dn.checkblockpath()
+	dn.UpdateLoad()
 	return dn
 }
 
@@ -57,8 +58,6 @@ func (dn *DataNode) Register() {
 			Addr:      dn.addr,
 			StartTime: time.Now().Format("2006-01-02 15:04:05"),
 			Status:    service.DataNodeStatus_dActive,
-			DiskQuota: dn.DiskQuota,
-			UsedDisk:  dn.UsedDisk,
 		},
 	})
 	if err != nil {
@@ -68,6 +67,7 @@ func (dn *DataNode) Register() {
 	dn.addr = "127.0.0.1"
 	dn.port = ":" + strconv.Itoa(int(dn.id)+1024)
 	dn.BlockPath += "/" + strconv.Itoa(int(dn.id)) + "_blocks"
+	dn.load.Id = dn.id
 }
 
 func (dn *DataNode) Server() {
@@ -78,7 +78,7 @@ func (dn *DataNode) Server() {
 	if err != nil {
 		log.Fatal("listen error:", err)
 	}
-	maxSize := 136314880
+	maxSize := int(dn.BlockSize + 4<<20)
 	s := grpc.NewServer(grpc.MaxRecvMsgSize(maxSize), grpc.MaxSendMsgSize(maxSize))
 	service.RegisterDataNodeServiceServer(s, dn)
 	log.Println("DataNode is running, listen on", dn.addr+dn.port)
@@ -98,5 +98,4 @@ func (dn *DataNode) opencfg() {
 		log.Fatal("Config Read Fail: ", err)
 	}
 	dn.BlockSize <<= 20
-	dn.DiskQuota <<= 30
 }

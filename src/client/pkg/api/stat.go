@@ -22,7 +22,7 @@ func Stat(gofspath string) {
 	c := service.NewNameNodeServiceClient(conn)
 	rep, _ := c.Stat(context.Background(), &service.StatArgs{Path: gofspath})
 	if rep.Status == service.StatusCode_NotOK {
-		fmt.Print("Rename fail:")
+		fmt.Print("Stat fail:")
 		if rep.FileStatus == service.FileStatus_fIsFile {
 			fmt.Println("exist file on path")
 		}
@@ -35,7 +35,7 @@ func Stat(gofspath string) {
 		fmt.Print("Type: Directory\t")
 	} else {
 		fmt.Print("Type: File\t")
+		fmt.Printf("Size: %d\t", rep.Info.Size)
 	}
-	fmt.Printf("Size: %d\t", rep.Info.Size)
 	fmt.Printf("Modtime: %s\n", rep.Info.Modtime)
 }

@@ -3,8 +3,7 @@ package service;
 option go_package="/service;service";
 
 import "statuscode.proto";
-import "block.proto";
-import "namenode.proto";
+import "struct.proto";
 
 message WriteBlockArgs {
     string BlockId = 1;
@@ -21,16 +20,19 @@ message WriteBlockReply {
 }
 
 message ReadBlockArgs {
-    int64 BlockId = 1;
+    string BlockId = 1;
 }
+
 message ReadBlockReply {
     StatusCode Status = 1;
-    bytes DataBuf = 2;
+    string Md5 = 2;
+    bytes DataBuf = 3;
 }
 
 message GetBlockInfoArgs {
     int64 BlockId = 1;
 }
+
 message GetBlockInfoReply {
     StatusCode Status = 1;
     BlockInfo Info = 2;
@@ -38,7 +40,7 @@ message GetBlockInfoReply {
 
 message CreatePipelineArgs {
     int32 index = 1;
-    repeated SimDataNodeInfo DataNodes = 2;
+    repeated DataNodeNetInfo DataNodes = 2;
 }
 
 message CreatePipelineReply {

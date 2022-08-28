@@ -1,0 +1,47 @@
+syntax="proto3";
+package service;
+option go_package="/service;service";
+
+import "statuscode.proto";
+
+message DataNodeInfo {
+    int32 Id = 1;
+    string Addr = 2;
+    string Port = 3;
+    string StartTime = 4;
+    DataNodeStatus Status = 5;
+    int64 TotalDisk = 6;
+    int64 UsedDisk = 7;
+    repeated BlockInfo Blocks = 8;
+}
+
+message BlockInfo {
+    string Id = 1;
+    int64 Size = 2;
+}
+
+message DataNodeNetInfo {
+    int32 Id = 1;
+    string Addr = 2;
+    string Port = 3;
+}
+
+message DataNodeLoad {
+    int32 Id = 1;
+    int64 TotalDisk = 2;
+    int64 UsedDisk = 3;
+    float Perdisk = 4;
+    float Percpu = 5;
+    float Permem = 6;
+}
+
+message FileInfo {
+    FileStatus FileType = 1;
+    int64 Size = 2;
+    string modtime = 3;
+}
+
+message GetFileStruct {
+    string BlockId = 1;
+    repeated DataNodeNetInfo DataNodes = 2;
+}

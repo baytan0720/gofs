@@ -1,6 +1,7 @@
-package metamanager
+package metadatamanager
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"sync"
@@ -11,7 +12,7 @@ var root int64 = 0
 var entryidincrease int64
 var mu sync.Mutex
 
-func Format(metadatapath, metadatabackup string, t int) {
+func Start(metadatapath, metadatabackup string, t int) {
 	loadBackup(metadatapath, metadatabackup)
 	startDb(metadatapath)
 	go dbBackup(metadatabackup, t)
@@ -35,7 +36,7 @@ func formatDirVal(entryid int64, modtime string) string {
 }
 
 func formatFileVal(entryid, size int64, modtime string, blocks []string) string {
-	val := strconv.FormatInt(entryid, 10) + "_1_" + modtime + "_" + strconv.FormatInt(size, 10) + strconv.Itoa(len(blocks))
+	val := strconv.FormatInt(entryid, 10) + "_1_" + modtime + "_" + strconv.FormatInt(size, 10) + "_" + strconv.Itoa(len(blocks))
 	for _, v := range blocks {
 		val += "_" + v
 	}
@@ -61,7 +62,7 @@ func parseVal(val string) (entryid, size int64, filetype int, modtime string, bl
 		for i := 5; i < len(ana); i++ {
 			blocks = append(blocks, ana[i])
 		}
-		return entryid, size, 0, modtime, blocks
+		return entryid, size, 1, modtime, blocks
 	}
 }
 
@@ -101,13 +102,14 @@ func getBlocks(val string) []string {
 	ana := strings.Split(val, "_")
 	blocknum, _ := strconv.Atoi(ana[4])
 	blocks := make([]string, 0, blocknum)
-	for i := 4; i < len(ana); i++ {
+	for i := 5; i < len(ana); i++ {
 		blocks = append(blocks, ana[i])
 	}
 	return blocks
 }
 
 func updateModtime(val string) string {
+	fmt.Println("before", val)
 	entryid, size, filetype, _, blocks := parseVal(val)
 	if filetype == 0 {
 		return formatDirVal(entryid, time.Now().Format("2006-01-02 15:04:05"))

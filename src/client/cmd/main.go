@@ -52,7 +52,7 @@ func main() {
 		api.List(os.Args[2])
 	case "mkdir":
 		if len(os.Args) != 4 {
-			fmt.Println("Invalid Argument, usage: 'gofs mkdir <gofspath> <filename>'")
+			fmt.Println("Invalid Argument, usage: 'gofs mkdir <gofspath> <dirname>'")
 			return
 		}
 		api.Mkdir(os.Args[2], os.Args[3])

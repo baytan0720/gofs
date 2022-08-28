@@ -9,8 +9,8 @@ import (
 )
 
 func (dn *DataNode) BlockReport() {
-	dn.blocklist, dn.UsedDisk = blockmanager.ScanBlocks(dn.BlockPath)
-	rep, err := dn.client.BlockReport(context.Background(), &service.BlockReportArgs{Blocks: dn.blocklist})
+	dn.blocklist = blockmanager.ScanBlocks(dn.BlockPath)
+	rep, err := dn.client.BlockReport(context.Background(), &service.BlockReportArgs{Id: dn.id, Blocks: dn.blocklist})
 	if err != nil {
 		log.Println(err)
 	}
@@ -21,7 +21,6 @@ func (dn *DataNode) BlockReport() {
 
 func (dn *DataNode) newBlockReport(blockid string, size, entryid int64) {
 	dn.blocklist = append(dn.blocklist, &service.BlockInfo{Id: blockid, Size: size})
-	dn.UsedDisk += size
 	if rep, err := dn.client.NewBlockReport(context.Background(), &service.NewBlockReportArgs{Id: dn.id, Block: &service.BlockInfo{Id: blockid, Size: size}, EntryId: entryid}); err != nil {
 		log.Println(err)
 	} else if rep.Status == service.StatusCode_NotOK {

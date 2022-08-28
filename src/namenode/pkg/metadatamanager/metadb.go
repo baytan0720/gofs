@@ -1,4 +1,4 @@
-package metamanager
+package metadatamanager
 
 import (
 	"io"
@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/sirupsen/logrus"
 	"github.com/xujiajun/nutsdb"
 )
 
@@ -64,7 +65,7 @@ func dbDelete(key string) {
 	}
 }
 
-// func getAll() {
+// func GetAll() {
 // 	if err := db.View(
 // 		func(tx *nutsdb.Tx) error {
 // 			entries, err := tx.GetAll(bucket)
@@ -102,6 +103,7 @@ func initEntryId() {
 	if err := db.View(
 		func(tx *nutsdb.Tx) error {
 			if e, err := tx.Get("entryid", []byte("id")); err != nil {
+				entryidincrease = 1
 				return err
 			} else {
 				entryidincrease, _ = strconv.ParseInt(string(e.Value), 10, 64)
@@ -143,6 +145,11 @@ func dbBackup(path string, t int) {
 				}
 				return nil
 			})
-		db.Backup(path)
+		err := db.Backup(path)
+		if err != nil {
+			logrus.WithField("o", "Backup").Warn("MetaData backup fail")
+		} else {
+			logrus.WithField("o", "Backup").Info("MetaData backup")
+		}
 	}
 }

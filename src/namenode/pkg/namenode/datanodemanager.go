@@ -2,31 +2,24 @@ package namenode
 
 import (
 	"context"
+	"gofs/src/namenode/pkg/metadatamanager"
 	"gofs/src/service"
-	"log"
 	"strconv"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/yitter/idgenerator-go/idgen"
 )
 
-type tempfile struct {
-	filename  string
-	parentid  int64
-	size      int64
-	blockid   []string
-	cofirm    []int
-	cofirmnum int
+type datanode struct {
+	dietimer    *time.Timer
+	cleanblocks chan string
+	info        *service.DataNodeInfo
+	load        *service.DataNodeLoad
 }
-
-type DataNode struct {
-	dietimer *time.Timer
-	moreinfo *service.DataNodeInfo
-}
-
-var WaitCofirm map[int64]*tempfile = make(map[int64]*tempfile)
 
 func (nn *NameNode) Register(ctx context.Context, args *service.RegisterArgs) (*service.RegisterReply, error) {
+	//分配id
 	var id int32
 	select {
 	case id = <-nn.idChan:
@@ -35,21 +28,26 @@ func (nn *NameNode) Register(ctx context.Context, args *service.RegisterArgs) (*
 		id = <-nn.idChan
 	}
 
+	//心跳计时器
 	timer := time.NewTimer(time.Duration(nn.HeartBeatTimeout) * time.Second)
-	newDn := &DataNode{
-		dietimer: timer,
-		moreinfo: args.Info,
+	newDn := &datanode{
+		dietimer:    timer,
+		info:        args.Info,
+		cleanblocks: make(chan string, 10),
 	}
-	newDn.moreinfo.Id = id
-	newDn.moreinfo.Port = ":" + strconv.Itoa(int(id)+1024)
+	newDn.info.Id = id
+	newDn.info.Port = ":" + strconv.Itoa(int(id)+1024)
 	nn.DataNodeList[id] = newDn
 
+	//心跳超时
 	go func() {
 		<-timer.C
-		nn.totaldiskquota -= nn.DataNodeList[id].moreinfo.DiskQuota
-		nn.useddisk -= nn.DataNodeList[id].moreinfo.UsedDisk
+		for _, v := range nn.DataNodeList[id].info.Blocks {
+			delete(nn.cache, v.Id)
+		}
+		close(nn.DataNodeList[id].cleanblocks)
 		nn.DataNodeList[id] = nil
-		log.Println("ID: ", id, " is died")
+		log.Info("ID: ", id, " is offline")
 		nn.DataNodeNum--
 		if nn.DataNodeNum < 3 && nn.status == 1 {
 			nn.status = 0
@@ -58,10 +56,9 @@ func (nn *NameNode) Register(ctx context.Context, args *service.RegisterArgs) (*
 	}()
 
 	rep := &service.RegisterReply{Status: service.StatusCode_OK, Id: id}
-	log.Println("ID: ", rep.Id, " is connected")
+	log.Info("ID: ", id, " is online")
+
 	nn.DataNodeNum++
-	nn.totaldiskquota += newDn.moreinfo.DiskQuota
-	nn.useddisk += newDn.moreinfo.UsedDisk
 	if nn.DataNodeNum >= 3 && nn.status == 0 {
 		nn.status = 1
 	}
@@ -69,13 +66,24 @@ func (nn *NameNode) Register(ctx context.Context, args *service.RegisterArgs) (*
 }
 
 func (nn *NameNode) HeartBeat(ctx context.Context, args *service.HeartBeatArgs) (*service.HeartBeatReply, error) {
-	if nn.DataNodeList[args.Id] == nil {
+	dn := nn.DataNodeList[args.Id]
+	if dn == nil {
 		rep := &service.HeartBeatReply{Status: service.StatusCode_NotRegister}
 		return rep, nil
 	}
-	nn.DataNodeList[args.Id].dietimer.Stop()
-	nn.DataNodeList[args.Id].dietimer.Reset(time.Duration(nn.HeartBeatTimeout) * time.Second)
+	dn.load = args.Load
+	dn.dietimer.Stop()
+	dn.dietimer.Reset(time.Duration(nn.HeartBeatTimeout) * time.Second)
 	rep := &service.HeartBeatReply{Status: service.StatusCode_OK}
+	for {
+		select {
+		case blockid := <-dn.cleanblocks:
+			rep.CleanBlockId = append(rep.CleanBlockId, blockid)
+		default:
+			goto Loop
+		}
+	}
+Loop:
 	return rep, nil
 }
 
@@ -84,16 +92,17 @@ func (nn *NameNode) BlockReport(ctx context.Context, args *service.BlockReportAr
 		rep := &service.BlockReportReply{Status: service.StatusCode_NotRegister}
 		return rep, nil
 	}
-	nn.DataNodeList[args.Id].moreinfo.Blocks = args.Blocks
-	nn.DataNodeList[args.Id].moreinfo.BlockNum = int32(len(args.Blocks))
+	nn.DataNodeList[args.Id].info.Blocks = args.Blocks
+	for _, v := range args.Blocks {
+		nn.cache[v.Id] = append(nn.cache[v.Id], int(args.Id))
+	}
 	rep := &service.BlockReportReply{Status: service.StatusCode_OK}
 	return rep, nil
 }
 
 func (nn *NameNode) NewBlockReport(ctx context.Context, args *service.NewBlockReportArgs) (*service.NewBlockReportReply, error) {
-	nn.DataNodeList[args.Id].moreinfo.Blocks = append(nn.DataNodeList[args.Id].moreinfo.Blocks, args.Block)
-	nn.DataNodeList[args.Id].moreinfo.BlockNum++
-	nn.DataNodeList[args.Id].moreinfo.UsedDisk += args.Block.Size
+	nn.DataNodeList[args.Id].info.Blocks = append(nn.DataNodeList[args.Id].info.Blocks, args.Block)
+	nn.cache[args.Block.Id] = append(nn.cache[args.Block.Id], int(args.Id))
 	tempfile := WaitCofirm[args.EntryId]
 	if tempfile == nil {
 		return &service.NewBlockReportReply{Status: service.StatusCode_OK}, nil
@@ -105,6 +114,14 @@ func (nn *NameNode) NewBlockReport(ctx context.Context, args *service.NewBlockRe
 			break
 		}
 	}
+	log.Info("ID: ", args.Id, " Report a new block: ", args.Block.Id)
+	if tempfile.cofirmnum == len(tempfile.blockid) {
+		metadatamanager.Put(tempfile.parentid, tempfile.filename, args.EntryId, tempfile.size, time.Now().Format("2006-01-02 15:04:05"), tempfile.blockid)
+		log.WithField("o", "PUT").Info(tempfile.filename, " put sucess")
+	} else {
+		log.WithField("o", "PUT").Error(tempfile.filename, " put fail")
+	}
+	delete(WaitCofirm, args.EntryId)
 	rep := &service.NewBlockReportReply{Status: service.StatusCode_OK}
 	return rep, nil
 }
@@ -115,7 +132,7 @@ func (nn *NameNode) putId() {
 		nn.idIncrease++
 	}
 	if int(nn.idIncrease) > len(nn.DataNodeList)-1 {
-		nn.DataNodeList = append(nn.DataNodeList, make([]*DataNode, len(nn.DataNodeList))...)
+		nn.DataNodeList = append(nn.DataNodeList, make([]*datanode, len(nn.DataNodeList))...)
 	}
 }
 

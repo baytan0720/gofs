@@ -1,22 +1,22 @@
 #此配置基于unix
 #公共配置
-blocksize = 64                          #单个block大小，单位Mb
-replicanum = 3                          #默认block副本数量
+blocksize = 64                          #单个block大小，单位Mb，默认64Mb
+replicanum = 3                          #block副本数量，默认3
 
 #NameNode配置
 namenodeaddr = "127.0.0.1"              #NameNode地址
 namenodeport = ":1234"                  #NameNode监听端口
 metadatapath = "../../../metadata"      #元数据运行路径
 metadatabackup = "../../../backup"      #元数据持久化路径
-metadatartime = 15                      #元数据持久化时间间隔，单位m，持久化时间间隔短能减少宕机时数据量丢失，但同时会消耗系统资源
+metadatapersistence = 15                #元数据持久化时间间隔，单位m，持久化时间间隔短能减少宕机时元数据丢失，但同时会消耗系统资源，默认15分钟
 logpath = "../../../logs"               #日志存储路径
-heartbeattimeout = 30                   #心跳超时时间，单位s
+heartbeattimeout = 30                   #心跳超时时间，单位s，默认30s
+maxload = 80                            #允许DataNode最大负载，超过就不允许向其写入，默认80
 
 #DataNode配置
-addr = ""                               #NameNode地址
-port = ""                               #NameNode监听端口
+addr = ""                               #DataNode地址
+port = ""                               #DataNode监听端口
 standbynamenodeaddr = []                #NameNode备机地址
 standbynamenodeport = []                #NameNode备机端口
 blockpath = "../../../blocks"           #blocks存储路径
 blockreporttime = 15                    #blocks上报时间间隔，单位m
-diskquota = 80                          #datanode分配磁盘大小，单位Gb

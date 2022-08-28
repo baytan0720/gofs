@@ -136,6 +136,7 @@ func Put(gofspath, localpath string) {
 
 		conn.Close()
 	}
+	fmt.Println("Sucess")
 }
 
 func fastMD5(data []byte) string {

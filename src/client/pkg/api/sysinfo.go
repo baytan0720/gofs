@@ -21,14 +21,12 @@ func SysInfo() {
 	rep, _ := c.GetSystemInfo(context.Background(), &service.GetSystemInfoArgs{})
 	fmt.Println("System Info:")
 	fmt.Println("  Status:", rep.NnStatus)
-	fmt.Println("  TotalDiskQuota:", rep.TotalDiskQuota)
-	fmt.Println("  UsedDisk:", rep.UsedDisk)
 	fmt.Println("  BlockNum:", rep.ReplicaNum)
-	fmt.Println("  BlockSize:", rep.BlockSize<<20, "Mb")
+	fmt.Println("  BlockSize:", rep.BlockSize>>20, "Mb")
 	fmt.Println("DataNode:")
-	fmt.Println("  Id\tAddr\t\tPort\tStartTime\t\tStatus\t\tDiskQuota\tUsedDisk\tBlockNum\tBlocksId\t\tBlocksSize")
+	fmt.Println("  Id\tAddr\t\tPort\tStartTime\t\tStatus\t\tTotalDisk\tUsedDisk\tBlockNum\tBlocksId\t\tBlocksSize")
 	for _, v := range rep.DataNodes {
-		fmt.Printf("  %d\t%s\t%s\t%s\t%v\t\t%d Gb\t\t%d %%\t\t%d\t\t", v.Id, v.Addr, v.Port, v.StartTime, v.Status, v.DiskQuota<<30, v.UsedDisk/v.DiskQuota, v.BlockNum)
+		fmt.Printf("  %d\t%s\t%s\t%s\t%v\t\t%d Gb\t\t%d %%\t\t%d\t\t", v.Id, v.Addr, v.Port[1:], v.StartTime, v.Status, v.TotalDisk>>30, v.UsedDisk/v.TotalDisk, len(v.Blocks))
 		if len(v.Blocks) == 0 {
 			fmt.Println()
 		}
