@@ -35,7 +35,7 @@ func Stat(gofspath string) {
 		fmt.Print("Type: Directory\t")
 	} else {
 		fmt.Print("Type: File\t")
-		fmt.Printf("Size: %d\t", rep.Info.Size)
+		fmt.Printf("Size: %d B\t", rep.Info.Size)
 	}
 	fmt.Printf("Modtime: %s\n", rep.Info.Modtime)
 }

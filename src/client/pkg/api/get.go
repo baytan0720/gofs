@@ -83,7 +83,9 @@ func Get(gofspath, localpath string) {
 				defer func() {
 					recover()
 				}()
-				databuf[index] <- rep.DataBuf
+				if len(databuf[index]) == 0 {
+					databuf[index] <- rep.DataBuf
+				}
 			}(i, j)
 		}
 	}

@@ -9,6 +9,7 @@ client {
 }
 
 DataNode {
+    createpipeline
     writeblock
     readblock
     getblockinfo
