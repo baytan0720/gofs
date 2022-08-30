@@ -29,7 +29,7 @@ func Get(path string) (service.FileStatus, []string) {
 		parentid = entryid
 	}
 	val := dbGet(formatKey(parentid, ana[len(ana)-1]))
-	if val == "" {
+	if val == "" || getFileType(val) == 0 {
 		return service.FileStatus_fPathNotFound, nil
 	}
 	return service.FileStatus_fPathFound, getBlocks(val)

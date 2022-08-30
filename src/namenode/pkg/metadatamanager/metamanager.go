@@ -11,10 +11,8 @@ var root int64 = 0
 var entryidincrease int64
 var mu sync.Mutex
 
-func Start(metadatapath, metadatabackup string, t int) {
-	loadBackup(metadatapath, metadatabackup)
+func Start(metadatapath string) {
 	startDb(metadatapath)
-	go dbBackup(metadatabackup, t)
 	initEntryId()
 }
 

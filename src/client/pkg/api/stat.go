@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func Stat(gofspath string) {
+func Stat(gofspath, Addr string) {
 	err := checkPath(gofspath)
 	if err != nil {
 		fmt.Println("Invalid Argument: ", err)

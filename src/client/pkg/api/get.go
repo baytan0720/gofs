@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func Get(gofspath, localpath string) {
+func Get(gofspath, localpath, Addr string) {
 	err := checkPath(gofspath)
 	if err != nil {
 		fmt.Println("Invalid Argument: ", err)

@@ -1,13 +1,9 @@
 package metadatamanager
 
 import (
-	"io"
 	"log"
-	"os"
 	"strconv"
-	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/xujiajun/nutsdb"
 )
 
@@ -115,39 +111,5 @@ func initEntryId() {
 				}
 				return nil
 			})
-	}
-}
-
-func loadBackup(metadatapath, metabackup string) {
-	backup, err := os.Open(metabackup + "/0.dat")
-	if err != nil {
-		return
-	}
-	defer backup.Close()
-	os.Remove(metadatapath + "/0.dat")
-	metafile, err := os.Create(metadatapath + "/0.dat")
-	if err != nil {
-		return
-	}
-	defer metafile.Close()
-	io.Copy(metafile, backup)
-}
-
-func dbBackup(path string, t int) {
-	for {
-		time.Sleep(time.Duration(t) * time.Minute)
-		db.Update(
-			func(tx *nutsdb.Tx) error {
-				if err := tx.Put("entryid", []byte("id"), []byte(strconv.FormatInt(entryidincrease, 10)), 0); err != nil {
-					return err
-				}
-				return nil
-			})
-		err := db.Backup(path)
-		if err != nil {
-			logrus.WithField("o", "Backup").Warn("MetaData backup fail")
-		} else {
-			logrus.WithField("o", "Backup").Info("MetaData backup")
-		}
 	}
 }

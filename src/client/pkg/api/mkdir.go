@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func Mkdir(gofspath, dirname string) {
+func Mkdir(gofspath, dirname, Addr string) {
 	err := checkPath(gofspath)
 	if err != nil {
 		fmt.Println("Invalid Argument: ", err)

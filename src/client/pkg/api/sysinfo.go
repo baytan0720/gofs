@@ -10,9 +10,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-var Addr string
-
-func SysInfo() {
+func SysInfo(Addr string) {
 	conn, err := grpc.Dial(Addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		fmt.Println("NameNode connect fail:", err)

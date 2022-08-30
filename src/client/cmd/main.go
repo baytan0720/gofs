@@ -28,52 +28,52 @@ func main() {
 	}
 	Config = &config{}
 	opencfg()
-	api.Addr = Config.NameNodeAddr + Config.NameNodePort
+	Addr := Config.NameNodeAddr + Config.NameNodePort
 	switch os.Args[1] {
 	case "sysinfo":
-		api.SysInfo()
+		api.SysInfo(Addr)
 	case "put":
 		if len(os.Args) != 4 {
 			fmt.Println("Invalid Argument, usage: 'gofs put <gofspath> <localpath>'")
 			return
 		}
-		api.Put(os.Args[2], os.Args[3])
+		api.Put(os.Args[2], os.Args[3], Addr)
 	case "get":
 		if len(os.Args) != 4 {
 			fmt.Println("Invalid Argument, usage: 'gofs get <gofspath> <localpath>'")
 			return
 		}
-		api.Get(os.Args[2], os.Args[3])
+		api.Get(os.Args[2], os.Args[3], Addr)
 	case "ls":
 		if len(os.Args) != 3 {
 			fmt.Println("Invalid Argument, usage: 'gofs ls <gofspath>'")
 			return
 		}
-		api.List(os.Args[2])
+		api.List(os.Args[2], Addr)
 	case "mkdir":
 		if len(os.Args) != 4 {
 			fmt.Println("Invalid Argument, usage: 'gofs mkdir <gofspath> <dirname>'")
 			return
 		}
-		api.Mkdir(os.Args[2], os.Args[3])
+		api.Mkdir(os.Args[2], os.Args[3], Addr)
 	case "rename":
 		if len(os.Args) != 4 {
 			fmt.Println("Invalid Argument, usage: 'gofs rename <gofspath>'")
 			return
 		}
-		api.Rename(os.Args[2], os.Args[3])
+		api.Rename(os.Args[2], os.Args[3], Addr)
 	case "stat":
 		if len(os.Args) != 3 {
 			fmt.Println("Invalid Argument, usage: 'gofs stat <gofspath>'")
 			return
 		}
-		api.Stat(os.Args[2])
+		api.Stat(os.Args[2], Addr)
 	case "del":
 		if len(os.Args) != 3 {
 			fmt.Println("Invalid Argument, usage: 'gofs del <gofspath>'")
 			return
 		}
-		api.Delete(os.Args[2])
+		api.Delete(os.Args[2], Addr)
 	default:
 		fmt.Println("usage: 'gofs help' to get usage of gofs")
 	}

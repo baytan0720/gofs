@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func Delete(gofspath string) {
+func Delete(gofspath, Addr string) {
 	err := checkPath(gofspath)
 	if err != nil {
 		fmt.Println("Invalid Argument: ", err)

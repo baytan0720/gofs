@@ -14,7 +14,7 @@ import (
 
 const hextable = "0123456789abcdef"
 
-func Put(gofspath, localpath string) {
+func Put(gofspath, localpath, Addr string) {
 	err := checkPath(gofspath)
 	if err != nil {
 		fmt.Println("Invalid Argument: ", err)

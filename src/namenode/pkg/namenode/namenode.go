@@ -19,14 +19,12 @@ type NameNode struct {
 	BlockSize  int64
 	ReplicaNum int
 
-	NameNodeAddr        string
-	NameNodePort        string
-	MetaDataPath        string
-	MetaDataBackup      string
-	MetaDataPersistence int
-	LogPath             string
-	HeartBeatTimeout    int
-	MaxLoad             int
+	NameNodeAddr     string
+	NameNodePort     string
+	MetaDataPath     string
+	LogPath          string
+	HeartBeatTimeout int
+	MaxLoad          int
 
 	Status       int //0 safemode/1 active
 	Starttime    string
@@ -77,7 +75,7 @@ func (nn *NameNode) opencfg() {
 
 func (nn *NameNode) plugin() {
 	logmanager.Start(nn.LogPath)
-	metadatamanager.Start(nn.MetaDataPath, nn.MetaDataBackup, nn.MetaDataPersistence)
+	metadatamanager.Start(nn.MetaDataPath)
 	idgen.SetIdGenerator(idgen.NewIdGeneratorOptions(1))
 	nn.lease = leasemanager.MakeLease()
 	nn.monitorServer()
