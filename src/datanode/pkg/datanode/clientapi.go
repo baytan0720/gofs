@@ -26,8 +26,6 @@ func (dn *DataNode) WriteBlock(ctx context.Context, args *service.WriteBlockArgs
 			conn := pipeline[args.DatanodeIds[args.Index]]
 			c := service.NewDataNodeServiceClient(conn)
 			c.WriteBlock(context.Background(), args)
-			timer.Reset(0)
-			conn.Close()
 		}()
 	}
 	go func(path, blockid string, data []byte) {

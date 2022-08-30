@@ -117,11 +117,9 @@ func (nn *NameNode) NewBlockReport(ctx context.Context, args *service.NewBlockRe
 	log.Info("ID: ", args.Id, " Report a new block: ", args.Block.Id)
 	if tempfile.cofirmnum == len(tempfile.blockid) {
 		metadatamanager.Put(tempfile.parentid, tempfile.filename, args.EntryId, tempfile.size, time.Now().Format("2006-01-02 15:04:05"), tempfile.blockid)
+		delete(WaitCofirm, args.EntryId)
 		log.WithField("o", "PUT").Info(tempfile.filename, " put sucess")
-	} else {
-		log.WithField("o", "PUT").Error(tempfile.filename, " put fail")
 	}
-	delete(WaitCofirm, args.EntryId)
 	rep := &service.NewBlockReportReply{Status: service.StatusCode_OK}
 	return rep, nil
 }

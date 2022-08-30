@@ -26,6 +26,7 @@ func Get(gofspath, localpath string) {
 		localpath += "/" + filename
 	}
 
+	diaOpt := grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(66<<20), grpc.MaxCallSendMsgSize(66<<20))
 	conn, err := grpc.Dial(Addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		fmt.Println("NameNode connect fail:", err)
@@ -60,8 +61,8 @@ func Get(gofspath, localpath string) {
 	for i, v := range rep.Blocks {
 		databuf[i] = make(chan []byte)
 		for _, j := range v.DataNodes {
-			go func(index int, info *service.DataNodeNetInfo) {
-				conn, err := grpc.Dial(info.Addr+info.Port, grpc.WithTransportCredentials(insecure.NewCredentials()))
+			go func(blockid string, index int, info *service.DataNodeNetInfo) {
+				conn, err := grpc.Dial(info.Addr+info.Port, grpc.WithTransportCredentials(insecure.NewCredentials()), diaOpt)
 				if err != nil {
 					fmt.Println("DataNode connect fail:", err)
 					return
@@ -69,7 +70,7 @@ func Get(gofspath, localpath string) {
 				c := service.NewDataNodeServiceClient(conn)
 				defer conn.Close()
 
-				rep, err := c.ReadBlock(context.Background(), &service.ReadBlockArgs{BlockId: v.BlockId})
+				rep, err := c.ReadBlock(context.Background(), &service.ReadBlockArgs{BlockId: blockid})
 				if err != nil {
 					fmt.Println("DataNode connect fail:", err)
 					return
@@ -86,7 +87,7 @@ func Get(gofspath, localpath string) {
 				if len(databuf[index]) == 0 {
 					databuf[index] <- rep.DataBuf
 				}
-			}(i, j)
+			}(v.BlockId, i, j)
 		}
 	}
 	data := make([]byte, 0, len(databuf)*(64<<20))

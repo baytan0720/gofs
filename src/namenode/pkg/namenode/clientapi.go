@@ -45,10 +45,10 @@ func (nn *NameNode) PutFile(ctx context.Context, args *service.PutFileArgs) (*se
 	if check != service.FileStatus_fPathFound {
 		rep.Status = service.StatusCode_NotOK
 		rep.FileStatus = check
-		log.WithField("o", "Put").Error("refuse put", args.FileName, "on path", args.Path)
+		log.WithField("o", "Put").Error("refuse put ", args.FileName, " on path", args.Path)
 		return rep, nil
 	}
-	log.WithField("o", "Put").Info("request put", args.FileName, "on path", args.Path)
+	log.WithField("o", "Put").Info("request put ", args.FileName, " on path", args.Path)
 	//分配BlockId
 	var blockNum int64
 	if args.FileSize%nn.BlockSize == 0 {
@@ -71,10 +71,10 @@ func (nn *NameNode) PutFile(ctx context.Context, args *service.PutFileArgs) (*se
 func (nn *NameNode) PutBlock(ctx context.Context, args *service.PutBlockArgs) (*service.PutBlockReply, error) {
 	datanodes := nn.calLoad()
 	if datanodes == nil {
-		log.WithField("o", "Put").Error("refule put block", args.BlockId, "to DataNodes: not enough available DataNode")
+		log.WithField("o", "Put").Error("refule put block ", args.BlockId, " to DataNodes: not enough available DataNode")
 		return &service.PutBlockReply{Status: service.StatusCode_NotOK}, nil
 	}
-	log.WithField("o", "Put").Info("request put block", args.BlockId, "to DataNodes")
+	log.WithField("o", "Put").Info("request put block ", args.BlockId, " to DataNodes")
 	datanodeinfo := make([]*service.DataNodeNetInfo, 3)
 	for i, v := range datanodes {
 		datanodeinfo[i] = &service.DataNodeNetInfo{Id: int32(v), Addr: nn.DataNodeList[v].info.Addr, Port: nn.DataNodeList[v].info.Port}
@@ -85,10 +85,10 @@ func (nn *NameNode) PutBlock(ctx context.Context, args *service.PutBlockArgs) (*
 func (nn *NameNode) GetFile(ctx context.Context, args *service.GetFileArgs) (*service.GetFileReply, error) {
 	ok, blocks := metadatamanager.Get(args.Path)
 	if ok != 0 {
-		log.WithField("o", "Get").Error("refuse get", args.Path, ok)
+		log.WithField("o", "Get").Error("refuse get ", args.Path, ok)
 		return &service.GetFileReply{Status: service.StatusCode_NotOK, FileStatus: ok}, nil
 	}
-	log.WithField("o", "Get").Info("request get", args.Path)
+	log.WithField("o", "Get").Info("request get ", args.Path)
 	rep := &service.GetFileReply{Blocks: make([]*service.GetFileStruct, len(blocks))}
 	for i, v := range blocks {
 		block := &service.GetFileStruct{

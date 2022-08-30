@@ -101,7 +101,7 @@ func Put(gofspath, localpath string) {
 		f.Read(b)
 		Md5 := fastMD5(b)
 
-		rep, err := c.PutBlock(context.Background(), &service.PutBlockArgs{BlockSize: size})
+		rep, err := c.PutBlock(context.Background(), &service.PutBlockArgs{BlockId: blockid[nowBlock], BlockSize: size})
 		if err != nil {
 			fmt.Println("Put fail:", err)
 			return
@@ -133,8 +133,8 @@ func Put(gofspath, localpath string) {
 			fmt.Println("WriteBlock fail: Uknown error")
 			return
 		}
-
 		conn.Close()
+		nowBlock++
 	}
 	fmt.Println("Sucess")
 }
