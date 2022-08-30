@@ -34,7 +34,7 @@ func (nn *NameNode) GetSystemInfo(ctx context.Context, args *service.GetSystemIn
 		v.info.UsedDisk = v.load.UsedDisk
 		rep.DataNodes = append(rep.DataNodes, v.info)
 	}
-	// metadatamanager.GetAll()
+	metadatamanager.GetAll()
 	return rep, nil
 }
 

@@ -61,35 +61,33 @@ func dbDelete(key string) {
 			}
 			return nil
 		}); err != nil {
-		log.Fatal(err)
 	}
 }
 
-// func GetAll() {
-// 	if err := db.View(
-// 		func(tx *nutsdb.Tx) error {
-// 			entries, err := tx.GetAll(bucket)
-// 			if err != nil {
-// 				return err
-// 			}
-// 			for _, entry := range entries {
-// 				log.Println(string(entry.Key), string(entry.Value))
-// 			}
-// 			return nil
-// 		}); err != nil {
-// 		log.Println(err)
-// 	}
-// }
+func GetAll() {
+	if err := db.View(
+		func(tx *nutsdb.Tx) error {
+			entries, err := tx.GetAll(bucket)
+			if err != nil {
+				return err
+			}
+			for _, entry := range entries {
+				log.Println(string(entry.Key), string(entry.Value))
+			}
+			return nil
+		}); err != nil {
+	}
+}
 
-func dbPrefixScan(prefix string, limit int) []string {
-	list := make([]string, 0, limit)
+func dbPrefixScan(prefix string, limit int) [][]string {
+	list := make([][]string, 0, limit)
 	if err := db.View(
 		func(tx *nutsdb.Tx) error {
 			if entries, _, err := tx.PrefixScan(bucket, []byte(prefix), 0, limit); err != nil {
 				return err
 			} else {
 				for _, v := range entries {
-					list = append(list, getFileName(string(v.Key)))
+					list = append(list, []string{string(v.Key), string(v.Value)})
 				}
 			}
 			return nil

@@ -1,7 +1,6 @@
 package metadatamanager
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 	"sync"
@@ -109,7 +108,6 @@ func getBlocks(val string) []string {
 }
 
 func updateModtime(val string) string {
-	fmt.Println("before", val)
 	entryid, size, filetype, _, blocks := parseVal(val)
 	if filetype == 0 {
 		return formatDirVal(entryid, time.Now().Format("2006-01-02 15:04:05"))
