@@ -182,7 +182,7 @@ func delDir(parentid, entryid int64, filename string) {
 		if getFileType(entry[1]) == 0 {
 			delDir(entryid, getEntryId(entry[1]), getFileName(entry[0]))
 		} else {
-			dbDelete(formatKey(entryid, entry[0]))
+			dbDelete(formatKey(entryid, getFileName(entry[0])))
 		}
 	}
 	dbDelete(formatKey(parentid, filename))

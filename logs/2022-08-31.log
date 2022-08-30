@@ -1,0 +1,64 @@
+Aug 31 00:58:27 [INFO] NameNode is running
+Aug 31 00:58:39 [INFO] ID: 0 is online
+Aug 31 00:58:50 [INFO] ID: 1 is online
+Aug 31 00:58:55 [INFO] ID: 2 is online
+Aug 31 00:59:23 [INFO] [List] request list /
+Aug 31 00:59:29 [INFO] [Mkdir] request mkdir home on path/
+Aug 31 00:59:37 [INFO] [Stat] request stat /home
+Aug 31 00:59:49 [INFO] [Put] request put test.txt on path/home
+Aug 31 00:59:49 [INFO] [Put] request put block 326624817573957 to DataNodes
+Aug 31 00:59:49 [INFO] ID: 0 Report a new block: 326624817573957
+Aug 31 00:59:49 [INFO] ID: 1 Report a new block: 326624817573957
+Aug 31 00:59:49 [INFO] [PUT] test.txt put sucess
+Aug 31 00:59:49 [INFO] [PUT] test.txt put sucess
+Aug 31 01:00:06 [ERRO] [Rename] refuse rename /home/test.txt to newname.txtfExist
+Aug 31 01:00:18 [INFO] [List] request list /home
+Aug 31 01:00:29 [INFO] [Delete] request delete /home/newname.txt
+Aug 31 01:00:36 [INFO] [Delete] request delete /home/test.txt
+Aug 31 01:00:59 [INFO] [List] request list /home
+Aug 31 01:01:04 [INFO] [Delete] request delete /home
+Aug 31 01:01:36 [INFO] [List] request list /
+Aug 31 01:01:44 [INFO] [Mkdir] request mkdir home on path/
+Aug 31 01:01:51 [INFO] [Stat] request stat /home
+Aug 31 01:02:05 [INFO] [Put] request put test.txt on path/home
+Aug 31 01:02:05 [INFO] [Put] request put block 326625375395909 to DataNodes
+Aug 31 01:02:05 [INFO] ID: 0 Report a new block: 326625375395909
+Aug 31 01:02:05 [INFO] ID: 1 Report a new block: 326625375395909
+Aug 31 01:02:05 [INFO] ID: 2 Report a new block: 326625375395909
+Aug 31 01:02:05 [INFO] [PUT] test.txt put sucess
+Aug 31 01:02:05 [INFO] [PUT] test.txt put sucess
+Aug 31 01:02:05 [INFO] [PUT] test.txt put sucess
+Aug 31 01:02:22 [ERRO] [Rename] refuse rename /home/test.txt to newname.txtfExist
+Aug 31 01:02:34 [INFO] [List] request list /
+Aug 31 01:02:37 [INFO] [List] request list /home
+Aug 31 01:02:54 [INFO] [Delete] request delete /home/test.txt
+Aug 31 01:02:56 [INFO] [List] request list /home
+Aug 31 01:03:01 [INFO] [Delete] request delete /home/newname.txt
+Aug 31 01:03:03 [INFO] [List] request list /home
+Aug 31 01:03:11 [INFO] [Delete] request delete /home
+Aug 31 01:03:17 [INFO] [Mkdir] request mkdir home on path/
+Aug 31 01:03:20 [INFO] [List] request list /home
+Aug 31 01:03:28 [INFO] [Put] request put test.txt on path/home
+Aug 31 01:03:28 [INFO] [Put] request put block 326625718042693 to DataNodes
+Aug 31 01:03:28 [INFO] ID: 0 Report a new block: 326625718042693
+Aug 31 01:03:28 [INFO] ID: 1 Report a new block: 326625718042693
+Aug 31 01:03:28 [INFO] [PUT] test.txt put sucess
+Aug 31 01:03:28 [INFO] [PUT] test.txt put sucess
+Aug 31 01:03:30 [INFO] [List] request list /home
+Aug 31 01:03:36 [INFO] [Delete] request delete /home/test.txt
+Aug 31 01:04:16 [INFO] [List] request list /
+Aug 31 01:04:25 [INFO] [Delete] request delete /home
+Aug 31 01:04:44 [INFO] [List] request list /
+Aug 31 01:04:50 [INFO] [Mkdir] request mkdir home on path/
+Aug 31 01:04:56 [INFO] [Stat] request stat /home
+Aug 31 01:05:08 [INFO] [Put] request put test.txt on path/home
+Aug 31 01:05:08 [INFO] [Put] request put block 326626124542021 to DataNodes
+Aug 31 01:05:08 [INFO] ID: 1 Report a new block: 326626124542021
+Aug 31 01:05:08 [INFO] ID: 0 Report a new block: 326626124542021
+Aug 31 01:05:08 [INFO] [PUT] test.txt put sucess
+Aug 31 01:05:08 [INFO] [PUT] test.txt put sucess
+Aug 31 01:05:21 [INFO] [Rename] request rename /home/test.txt to newname
+Aug 31 01:05:30 [INFO] [List] request list /home
+Aug 31 01:05:37 [INFO] [Delete] request delete /home
+Aug 31 01:05:50 [ERRO] [Stat] refuse stat /home/newnamefPathNotFound
+Aug 31 01:13:28 [INFO] [Backup] MetaData backup
