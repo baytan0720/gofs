@@ -1,7 +1,6 @@
 package metadatamanager
 
 import (
-	"fmt"
 	"gofs/src/service"
 	"strconv"
 	"strings"
@@ -164,7 +163,6 @@ func Stat(path string) (*service.FileInfo, service.FileStatus) {
 	if val == "" {
 		return nil, service.FileStatus_fPathNotFound
 	}
-	fmt.Println(val)
 	_, size, filetype, modtime, _ := parseVal(val)
 	if filetype == 0 {
 		return &service.FileInfo{
