@@ -78,4 +78,5 @@ func (nn *NameNode) plugin() {
 	metadatamanager.Start(nn.MetaDataPath)
 	idgen.SetIdGenerator(idgen.NewIdGeneratorOptions(1))
 	nn.lease = leasemanager.MakeLease()
+	nn.monitorServer()
 }
