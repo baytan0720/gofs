@@ -79,7 +79,7 @@ func List(path string) ([]string, service.FileStatus) {
 	}
 	list := make([]string, 0, 128)
 	for _, v := range dbPrefixScan(strconv.FormatInt(parentid, 10)+"_", 128) {
-		list = append(list, getFileName(v[1]))
+		list = append(list, getFileName(v[0]))
 	}
 	return list, 0
 }
