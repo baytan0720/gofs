@@ -49,8 +49,8 @@ func (nn *NameNode) Register(ctx context.Context, args *service.RegisterArgs) (*
 		nn.DataNodeList[id] = nil
 		log.Info("ID: ", id, " is offline")
 		nn.DataNodeNum--
-		if nn.DataNodeNum < 3 && nn.status == 1 {
-			nn.status = 0
+		if nn.DataNodeNum < 3 && nn.Status == 1 {
+			nn.Status = 0
 		}
 		nn.idChan <- id
 	}()
@@ -59,8 +59,8 @@ func (nn *NameNode) Register(ctx context.Context, args *service.RegisterArgs) (*
 	log.Info("ID: ", id, " is online")
 
 	nn.DataNodeNum++
-	if nn.DataNodeNum >= 3 && nn.status == 0 {
-		nn.status = 1
+	if nn.DataNodeNum >= 3 && nn.Status == 0 {
+		nn.Status = 1
 	}
 	return rep, nil
 }
@@ -139,7 +139,7 @@ func (nn *NameNode) putId() {
 func getBlockId(sum int) []string {
 	blockid := make([]string, sum)
 	for i := 0; i < sum; i++ {
-		blockid[i] = strconv.FormatInt(idgen.NextId(), 10) + "^" + strconv.Itoa(i)
+		blockid[i] = strconv.FormatInt(idgen.NextId(), 10)
 	}
 	return blockid
 }

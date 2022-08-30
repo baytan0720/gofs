@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <title>GOFS</title>
+</head>
+<body>
+    <div class="app">
+        <el-container>
+            <el-header>
+                <div style="height: 55px;border-bottom: 1px solid #EBEEF5;">
+                    <div style="height: 55px;width: 200px;text-align: center;line-height: 55px;font-size: 20px;">监控系统</div>
+                </div>
+            </el-header>
+            <el-container>
+            <el-aside width="200px">
+                <el-menu default-active="1" @select="handleSelect">
+                    <el-menu-item index="1">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">首页</span>
+                    </el-menu-item>
+                    <el-menu-item index="2">
+                        <i class="el-icon-folder-opened"></i>
+                        <span slot="title">文件浏览</span>
+                    </el-menu-item>
+                    <el-menu-item index="3">
+                        <i class="el-icon-document"></i>
+                        <span slot="title">日志</span>
+                    </el-menu-item>
+                    </el-menu>
+                </el-aside>
+                <el-main>
+                    <el-row :gutter="20" style="margin-bottom: 20px;">
+                        <el-col :span="12">
+                            <el-card style="width: 100%;height: 342px;min-width: 450px;">
+                                <el-descriptions title="系统信息" column = 1>
+                                    <el-descriptions-item label="实例ID">0</el-descriptions-item>
+                                    <el-descriptions-item label="实例状态"><i class="el-icon-check"></i>{{status}}</el-descriptions-item>
+                                    <el-descriptions-item label="启动时间">{{info.starttime}}</el-descriptions-item>
+                                    <el-descriptions-item label="CPU">{{info.cpunum}}核</el-descriptions-item>
+                                    <el-descriptions-item label="内存">{{info.totalmem}}GB</el-descriptions-item>
+                                    <el-descriptions-item label="硬盘">{{info.totaldisk}}GB</el-descriptions-item>
+                                    <el-descriptions-item label="副本大小">{{info.blocksize}}MB</el-descriptions-item>
+                                    <el-descriptions-item label="副本数量">{{info.replicanum}}</el-descriptions-item>
+                                </el-descriptions>
+                            </el-card>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-card class="smallcard" style="margin-bottom: 20px;">
+                                <el-descriptions title="CPU利用率（%）" style="margin-bottom: 0;">
+                                </el-descriptions>
+                                <div id="cpuCharts" style="width: 100%;height:100px;margin: 0 atuo;"></div>
+                            </el-card>
+                            <el-card class="smallcard">
+                                <el-descriptions title="硬盘使用情况">
+                                </el-descriptions>
+                                <div id="diskCharts" style="width: 100%;height:100px;margin: 0 atuo;"></div>
+                            </el-card>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-card class="smallcard" style="margin-bottom: 20px;">
+                                <el-descriptions title="内存使用率（%）">
+                                </el-descriptions>
+                                <div id="memCharts" style="width: 180px;height:100px;"></div>
+                            </el-card>
+                            <el-card class="smallcard">
+                                <el-descriptions title="操作">
+                                </el-descriptions>
+                                <el-row>
+                                    <el-button plain @click="shudown">关机</el-button>
+                                    <el-button type="danger" @click="format">格式化</el-button>
+                                </el-row>
+                            </el-card>
+                        </el-col>
+                    </el-row>
+                    <div>
+                        <el-card>
+                            <el-descriptions title="DataNodes"></el-descriptions>
+                            <el-dialog title="Block信息" :visible.sync="dialogTableVisible">
+                                <el-table :data="blocks">
+                                  <el-table-column prop="Id" label="BlockID"></el-table-column>
+                                  <el-table-column prop="Size" label="大小(B)"></el-table-column>
+                                </el-table>
+                              </el-dialog>
+                            <el-table :data="tableData" stripe max-height style="width: 100%">
+                                <el-table-column prop="id" label="ID" width="80"></el-table-column>
+                                <el-table-column prop="starttime" label="启动时间" width="200"></el-table-column>
+                                <el-table-column prop="address" label="地址" width="120"></el-table-column>
+                                <el-table-column prop="disk" label="硬盘(GB)"></el-table-column>
+                                <el-table-column prop="used" label="使用量(GB)"></el-table-column>
+                                <el-table-column prop="status" label="状态"></el-table-column>
+                                <el-table-column fixed="right" label="操作" width="100">
+                                <template slot-scope="scope">
+                                    <el-button @click="inspect(scope.row)" type="text" size="small">查看</el-button>
+                                </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-card>
+                    </div>
+                </el-main>
+            </el-container>
+        </el-container>
+    </div>
+    <style>
+        .app {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .el-container {
+            height: 100%;
+        }
+        .el-header {
+            padding: 0;
+        }
+        .el-main {
+            height: 100%;
+            min-width: 980px;
+        }
+        /* .el-footer {
+        } */
+        .el-menu {
+            height: 100%;
+        }
+        .smallcard {
+            width: 100%;
+            height:160px;
+            min-width: 215px;
+        }
+    </style>
+</body>  
+<body>
+    <script>
+    var vue=new Vue({
+        el: '.app',
+        data: {
+            status:'运行中',
+            dialogTableVisible:false,
+            info:{},
+            tableData: [],
+            load:{},
+            blocks:[],
+        },
+        mounted(){
+            var _this = this
+            axios.get("http://127.0.0.1:8090/api/init")
+            .then(function(res) {
+                _this.info = res.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+            axios.get("http://127.0.0.1:8090/api/datanodes")
+            .then(function(res) {
+                _this.tableData=res.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+            axios.get("http://127.0.0.1:8090/api/load")
+            .then(function(res) {
+                _this.load = res.data;
+                _this.updateCharts()
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                if (key==3) {
+                    window.location='http://127.0.0.1:8090/api/log'
+                }
+            },
+            format:function(){
+                this.$confirm('此操作将删除NameNode所有元数据，包括DataNode的所有Block，是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                // axios.get("")
+                // this.$message.success('');
+                }).catch(() => {
+                });
+            },
+            shudown: function() {
+                this.$confirm('此操作将关闭该系统, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                axios.get("http://127.0.0.1:8090/api/shudown")
+                this.$message.success('关机成功');
+                }).catch(() => {
+                });
+            },
+            inspect: function(row){
+                var _this = this
+                axios.get("http://127.0.0.1:8090/api/block?id="+row.id)
+                .then(function(res) {
+                    _this.blocks = res.data
+                    console.log(_this.blocks)
+                    _this.dialogTableVisible=true
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+            },
+            cpuCharts: function(){
+                var myChart = echarts.init(document.getElementById('cpuCharts'));
+                var option = {
+                    tooltip: {},
+                    xAxis: {
+                        data: this.load.timedata,
+                        axisLine:{
+                            lineStyle:{
+                                color:'#909399',
+                            }
+                        }
+                    },
+                    yAxis: {
+                        axisLine:{
+                            lineStyle:{
+                                color:'#909399',
+                            }
+                        }
+                    },
+                    series: [{
+                        type: 'line',
+                        color: '#409EFF',
+                        data: this.load.cpudata,
+                        smooth:true
+                    }],
+                    grid:{
+                        top:"20px",
+                        left:"25px",
+                        right:"20px",
+                        bottom:"25px"
+                    },
+                };
+                myChart.setOption(option);
+            },
+            memCharts: function(){
+                var myChart = echarts.init(document.getElementById('memCharts'));
+                var option = {
+                    tooltip: {},
+                    xAxis: {
+                        data: this.load.timedata,
+                        axisLine:{
+                            lineStyle:{
+                                color:'#909399',
+                            }
+                        }
+                    },
+                    yAxis: {
+                        axisLine:{
+                            lineStyle:{
+                                color:'#909399',
+                            }
+                        }
+                    },
+                    series: [{
+                        type: 'line',
+                        color: '#409EFF',
+                        data: this.load.memdata,
+                        smooth:true
+                    }],
+                    grid:{
+                        top:"20px",
+                        left:"25px",
+                        right:"20px",
+                        bottom:"25px"
+                    },
+                };
+                myChart.setOption(option);
+            },
+            diskCharts: function(){
+                var myChart = echarts.init(document.getElementById('diskCharts'));
+                var option = {
+                    graphic: [{ //环形图中间添加文字
+                        type: 'text', //通过不同top值可以设置上下显示
+                        left: 'center',
+                        top: '45%',
+                        style: {
+                            text: 'Used:'+this.load.diskused+'%',
+                            textAlign: 'center',
+                            fill: '#606266', //文字的颜色
+                            width: 10,
+                            height: 10,
+                            fontSize: 12,
+                            fontFamily: "Microsoft YaHei"
+                        }
+                    }],
+                    series: [{
+                        type: 'pie',
+                        color: ['#409EFF','#E4E7ED'],
+                        radius: ['70%','85%'],
+                        data: [{
+                            value: this.load.diskused,
+                        },{
+                            value: this.load.diskfree,
+                        }],
+                        labelLine: {
+                            show: false
+                        },
+                    }],
+                };
+                myChart.setOption(option);
+            },
+            updateLoad: function(){
+                var _this = this
+                axios.get("http://127.0.0.1:8090/api/load")
+                .then(function(res) {
+                    _this.load = res.data;
+                    _this.updateCharts()
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+            },
+            updateCharts: function(){
+                this.cpuCharts()
+                this.memCharts()
+                this.diskCharts()
+            },
+        },
+    })
+    </script>
+</body>
+</html>

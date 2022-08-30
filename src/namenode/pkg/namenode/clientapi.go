@@ -21,7 +21,7 @@ var WaitCofirm map[int64]*tempfile = make(map[int64]*tempfile)
 
 func (nn *NameNode) GetSystemInfo(ctx context.Context, args *service.GetSystemInfoArgs) (*service.GetSystemInfoReply, error) {
 	rep := &service.GetSystemInfoReply{
-		NnStatus:   service.NameNodeStatus(nn.status),
+		NnStatus:   service.NameNodeStatus(nn.Status),
 		ReplicaNum: int32(nn.ReplicaNum),
 		BlockSize:  nn.BlockSize,
 		DataNodes:  make([]*service.DataNodeInfo, 0, nn.DataNodeNum),
@@ -169,7 +169,7 @@ func (nn *NameNode) Stat(ctx context.Context, args *service.StatArgs) (*service.
 }
 
 func (nn *NameNode) GetLease(ctx context.Context, args *service.GetLeaseArgs) (*service.GetLeaseReply, error) {
-	if nn.status == 0 {
+	if nn.Status == 0 {
 		return &service.GetLeaseReply{Status: service.StatusCode_NotOK, NameNodeStatus: service.NameNodeStatus_nSafeMode}, nil
 	}
 	err := nn.lease.Get()

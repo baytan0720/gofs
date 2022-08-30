@@ -65,8 +65,10 @@ func (dn *DataNode) CreatePipeline(ctx context.Context, args *service.CreatePipe
 	timer = time.NewTimer(10 * time.Minute)
 	go func(id int32) {
 		<-timer.C
-		pipeline[id].Close()
-		delete(pipeline, id)
+		if pipeline[id] != nil {
+			pipeline[id].Close()
+			delete(pipeline, id)
+		}
 	}(args.DataNodes[args.Index].Id)
 	return &service.CreatePipelineReply{Status: service.StatusCode_OK}, nil
 }

@@ -1,0 +1,16 @@
+Aug 30 22:39:41 [INFO] NameNode is running
+Aug 30 22:54:41 [INFO] [Backup] MetaData backup
+:30:04 [INFO] ID: 1 is online
+Aug 30 22:14:06 [INFO] ID: 2 is online
+Aug 30 22:14:38 [INFO] [List] request list /
+Aug 30 22:14:45 [INFO] [Mkdir] request mkdir home on path/
+Aug 30 22:14:56 [INFO] [Put] request puttest.txton path/home
+Aug 30 22:14:56 [INFO] [Put] request put blockto DataNodes
+Aug 30 22:14:56 [INFO] ID: 0 Report a new block: 326584299139141
+Aug 30 22:14:56 [INFO] ID: 1 Report a new block: 326584299139141
+Aug 30 22:14:56 [INFO] ID: 2 Report a new block: 326584299139141
+Aug 30 22:14:56 [INFO] [PUT] test.txt put sucess
+Aug 30 22:14:56 [INFO] [PUT] test.txt put sucess
+Aug 30 22:14:56 [INFO] [PUT] test.txt put sucess
+Aug 30 22:25:25 [INFO] ID: 2 is offline
+Aug 30 22:27:18 [INFO] [Backup] MetaData backup

@@ -7,6 +7,7 @@ import (
 	"gofs/src/service"
 	"log"
 	"net"
+	"time"
 
 	"github.com/BurntSushi/toml"
 	"github.com/sirupsen/logrus"
@@ -27,7 +28,8 @@ type NameNode struct {
 	HeartBeatTimeout    int
 	MaxLoad             int
 
-	status       int //0 safemode/1 active
+	Status       int //0 safemode/1 active
+	Starttime    string
 	idChan       chan int32
 	idIncrease   int32
 	DataNodeList []*datanode
@@ -40,11 +42,12 @@ type NameNode struct {
 
 func MakeNameNode() *NameNode {
 	nn := &NameNode{
-		status:       0,
+		Status:       0,
 		idChan:       make(chan int32, 64),
 		idIncrease:   0,
 		DataNodeList: make([]*datanode, 3, 128),
 		cache:        make(map[string][]int),
+		Starttime:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 	nn.opencfg()
 	nn.plugin()
@@ -77,4 +80,5 @@ func (nn *NameNode) plugin() {
 	metadatamanager.Start(nn.MetaDataPath, nn.MetaDataBackup, nn.MetaDataPersistence)
 	idgen.SetIdGenerator(idgen.NewIdGeneratorOptions(1))
 	nn.lease = leasemanager.MakeLease()
+	nn.monitorServer()
 }
