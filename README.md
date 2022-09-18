@@ -115,6 +115,8 @@ GOFS
 $ git clone https://github.com/baytan0720/gofs.git
 ```
 ## 使用
+### 配置文件
+config/config.toml   
 ### 启动服务
 ```Bash
 cd sh && sh nn.sh
@@ -139,7 +141,7 @@ Usage of gofs <command>:
   gofs mkdir <gofspath> <dirname>       'make directory on path'
 ```
 ### 监控面板
-浏览器访问127.0.0.1:8090
+浏览器访问127.0.0.1:8090   
 ## 性能测试
 ![image](./docs/test.png)
 ## 目前存在问题
