@@ -133,5 +133,5 @@ func getblock(c echo.Context) error {
 }
 
 func getLog(c echo.Context) error {
-	return c.File("../../../logs/2022-08-30.log")
+	return c.File("../../../logs/" + Moni.Starttime + ".log")
 }

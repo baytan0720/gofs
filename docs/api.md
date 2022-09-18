@@ -14,3 +14,22 @@ DataNode {
     readblock
     getblockinfo
 }
+
+NameNode {
+    BlockReport
+    Delete
+    GetFile
+    GetLease
+    GetSystemInfo
+    HeartBeat
+    List
+    Mkdir
+    NewBlockReport
+    PutFile
+    PutBlock
+    Register
+    Rename
+    RenewLease
+    ReleaseLease
+    Stat
+}

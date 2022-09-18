@@ -74,7 +74,7 @@ func (nn *NameNode) opencfg() {
 }
 
 func (nn *NameNode) plugin() {
-	logmanager.Start(nn.LogPath)
+	logmanager.Start(nn.LogPath, nn.Starttime)
 	metadatamanager.Start(nn.MetaDataPath)
 	idgen.SetIdGenerator(idgen.NewIdGeneratorOptions(1))
 	nn.lease = leasemanager.MakeLease()
