@@ -46,5 +46,5 @@ It's very challenging. We can use some open source tools to help implement it, b
 
 We appreciate your help!
 
-If you have any ideas to join us, please see [CONTRIBUTING ](https://github.com/baytan0720/gofs/CONTRIBUTING.md)for details on submitting patches and the contribution workflow.
+If you have any ideas to join us, please see [CONTRIBUTING](https://github.com/baytan0720/gofs/blob/main/CONTRIBUTING.md) for details on submitting patches and the contribution workflow.
 
