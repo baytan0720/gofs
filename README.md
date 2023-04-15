@@ -8,11 +8,11 @@
  \_____|\____/|_|   |_____/    
 ```
 
-### Feature
+## Feature
 
 After further study, I deepened my understanding of the distributed system and prepared to rebuild the project.
 
-### Introduce
+## Introduce
 
 Before that, let's learn some concepts.
 
@@ -36,5 +36,15 @@ As you can see, the whole project is divided into three parts. Let's get more.
 
 **Chunk**: Usually, we divide files into fixed-size chunks, which is conducive to disk or network I/O and management, and disaster recovery can be achieved through backup blocks.
 
+**Lease**: Since most of the file operations of the client do not interact directly with the MetaServer, a lease mechanism is needed to control the connection and release of the client.
 
+Based on these, my goal is to design and implement a high-performance, highly available distributed file system. You can refer to [GFS](http://nil.csail.mit.edu/6.824/2022/papers/gfs.pdf), for more possible technical details.
+
+It's very challenging. We can use some open source tools to help implement it, but I still hope to implement most of the components.
+
+## Contributing
+
+We appreciate your help!
+
+If you have any ideas to join us, please see [CONTRIBUTING ](https://github.com/baytan0720/gofs/CONTRIBUTING.md)for details on submitting patches and the contribution workflow.
 
