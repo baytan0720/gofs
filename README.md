@@ -42,6 +42,10 @@ Based on these, my goal is to design and implement a high-performance, highly av
 
 It's very challenging. We can use some open source tools to help implement it, but I still hope to implement most of the components.
 
+## Construct
+
+![Construct](https://github.com/baytan0720/gofs/blob/main/docs/Construct.jpg)
+
 ## Contributing
 
 We appreciate your help!
